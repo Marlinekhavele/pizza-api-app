@@ -221,7 +221,7 @@ sonarcloud:
       - .sonar/cache
   script:
     - sonar-scanner
- needs: ["test:app"]
+  needs: ["test:app"]
   tags:
     - small-runners-nw
   rules:
