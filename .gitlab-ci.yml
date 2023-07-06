@@ -37,6 +37,13 @@ variables:
     - src/**/*
     - Dockerfile
     - .gitlab-ci.yml
+.lib.app:changes: &lib_app_changes
+  changes:
+    - deploy/**/*
+    - alembic/**/*
+    - src/**/*
+    - Dockerfile
+    - .gitlab-ci.yml
 
 .lib:app:rules: &lib_app_rules
   rules:
@@ -75,7 +82,7 @@ lint:
   <<: *lib_app_rules
 
 check types:
-  stage: quality_check
+  stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
   script:
     - make check-types
@@ -86,25 +93,25 @@ check types:
 test:
   stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
-  services:
-    - name: postgis/postgis:14-master
-      alias: db
-      command: [ "-p 5432" ]
-  variables:
-    PGDATA: /var/lib/postgresql/data/pgdata
-    POSTGRES_HOST: localhost
-    POSTGRES_DB: pizza-api-app
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: password
-
   # services:
-  #   - postgres:13.3-alpine
-
+  #   - name: postgis/postgis:14-master
+  #     alias: db
+  #     command: [ "-p 5432" ]
   # variables:
-  #     POSTGRES_PASSWORD: password
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_DB: pizza-api-app
-  #     POSTGRES_PORT: 5432
+  #   PGDATA: /var/lib/postgresql/data/pgdata
+  #   POSTGRES_HOST: localhost
+  #   POSTGRES_DB: pizza-api-app
+  #   POSTGRES_USER: postgres
+  #   POSTGRES_PASSWORD: password
+
+  services:
+    - postgres:13.3-alpine
+
+  variables:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pizza-api-app
+      POSTGRES_PORT: 5432
   
   script:
     - make test-with-coverage
@@ -118,6 +125,7 @@ test:
         coverage_format: cobertura
         path: .test-reports/coverage.xml
     expire_in: 1 day
+
 
 
 build app:
@@ -171,24 +179,61 @@ build linter:
     - helm senndernetes uninstall 
 
 
-diff_app:playground:
+diff_app:dev:
   extends: .diff_app
-  variables:
-    CLUSTER_NAME: playground-eks-cluster
   environment:
-    name: playground
+    name: dev
 
-deploy_app:playground:
+diff_app:uat:
+  extends: .diff_app
+  environment:
+    name: uat
+
+diff_app:prod:
+  extends: .diff_app
+  environment:
+    name: prod
+
+deploy_app:dev:
   needs:
-    - job: "diff_app:playground"
-    - job: "tf_apply:playground"
+    - job: "diff_app:dev"
+    - job: "tf_apply:dev"
       optional: true
   extends: .deploy_app
-  variables:
-    CLUSTER_NAME: playground-eks-cluster
   environment:
-    name: playground
+    name: dev
+
+deploy_app:uat:
+  needs:
+    - job: "diff_app:uat"
+    - job: "tf_apply:uat"
+      optional: true
+  extends: .deploy_app
+  environment:
+    name: uat
+
+deploy_app:prod:
+  needs:
+    - job: "diff_app:prod"
+    - job: "tf_apply:prod"
+      optional: true
+  extends: .deploy_app
+  environment:
+    name: prod
 
 
 
+# uninstall_app:prod:
+#   extends: .uninstall_app
+#   environment:
+#     name: prod
+#     action: stop
+#   when: manual
+
+# uninstall_app:dev:
+#   extends: .uninstall_app
+#   environment:
+#     name: dev
+#     action: stop
+#   when: manual
 
