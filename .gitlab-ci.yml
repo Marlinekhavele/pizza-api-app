@@ -3,12 +3,11 @@ stages:
   - tf_plan
   - build
   - test
-  - quality_check 
   - tf_apply
   - pre_deploy_app
   - deploy_app
 #  - destroy_app  ### Uncomment, when ready to cleanup
-  - destroy_app
+  # - destroy_app
 
 include:
   - local: iac/terraform/.gitlab-ci.yml
@@ -68,7 +67,7 @@ variables:
   <<: *lib_app_rules
 
 lint:
-  stage: quality_check
+  stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-linter
   script:
     - pre-commit run --all-files
@@ -85,8 +84,8 @@ check types:
     - small-runners-nw
   <<: *lib_app_rules
 
-test:app:
-  stage: quality_check
+test:
+  stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
   services:
     - name: postgis/postgis:14-master
