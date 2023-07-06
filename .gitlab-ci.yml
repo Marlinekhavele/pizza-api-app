@@ -3,7 +3,7 @@ stages:
   - tf_plan
   - build
   - test
-  - sonarcloud
+  - quality_check 
   - tf_apply
   - pre_deploy_app
   - deploy_app
@@ -68,7 +68,7 @@ variables:
   <<: *lib_app_rules
 
 lint:
-  stage: test
+  stage: quality_check
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-linter
   script:
     - pre-commit run --all-files
@@ -77,7 +77,7 @@ lint:
   <<: *lib_app_rules
 
 check types:
-  stage: test
+  stage: quality_check
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
   script:
     - make check-types
@@ -85,17 +85,28 @@ check types:
     - small-runners-nw
   <<: *lib_app_rules
 
-test:
-  stage: test
+test:app:
+  stage: quality_check
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
-  
   services:
-    - postgres:13.3-alpine
+    - name: postgis/postgis:14-master
+      alias: db
+      command: [ "-p 5432" ]
   variables:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: pizza-api-app
-      POSTGRES_DB: pizza-api-app
-      POSTGRES_PORT: 5432
+    PGDATA: /var/lib/postgresql/data/pgdata
+    POSTGRES_HOST: localhost
+    POSTGRES_DB: pizza-api-app
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: password
+
+  # services:
+  #   - postgres:13.3-alpine
+
+  # variables:
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DB: pizza-api-app
+  #     POSTGRES_PORT: 5432
   
   script:
     - make test-with-coverage
@@ -197,7 +208,7 @@ deploy_app:playground:
 #   when: manual
 
 sonarcloud:
-  stage: sonarcloud
+  stage: quality_check
   variables:
     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
@@ -210,4 +221,9 @@ sonarcloud:
       - .sonar/cache
   script:
     - sonar-scanner
+  needs: ["test:app"]
+  tags:
+    - small-runners-nw
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
 
