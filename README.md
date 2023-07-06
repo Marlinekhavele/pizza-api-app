@@ -85,7 +85,7 @@ cd <pizza-api-app>
 git init
 ```
 
-## Setting up your dev infrastructure from local
+<!-- ## Setting up your dev infrastructure from local
 
 ```sh
 # Change directory to iac/
@@ -102,7 +102,7 @@ cd iac/
 
 # Apply your dev infrastructure resources (ECS, ...)
 ./apply.sh shared
-```
+``` -->
 
 ## API Gateway integration
 
@@ -110,8 +110,8 @@ You can access your service via the API Gateway in two environments:
 
 | Environment   | URL                                          |
 | --------------|:--------------------------------------------:|
-| dev           | https://api.dev.cloud.sennder.com/<pizza-api-app> |
-| prod          | https://api.cloud.sennder.com/<pizza-api-app>     |
+| dev           | https://api.dev.cloud.sennder.com/pizza-api-app |
+| prod          | https://api.cloud.sennder.com/pizza-api-app    |
 
 Your service will be automatically secured via a lambda authorizer in the API Gateway. In order to access your services resources, add an 'Authorization: ' Header to your request containing a mothership token for either (staging) `https://sennder-sennder.stg.sennder.com` or (production) `https://api.sennder.com/`.
 
