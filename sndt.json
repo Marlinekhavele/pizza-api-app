@@ -1,0 +1,15 @@
+{
+  "template": {
+    "id": "k8s-fastapi-app"
+  },
+  "data": {
+    "ba": "carriers-and-drivers",
+    "pod": "driver-app",
+    "component": "pizza-api-app",
+    "code_ownership": false,
+    "api_gateway_enabled": true,
+    "rds": true,
+    "sonar_cloud": true,
+    "onboarding": true
+  }
+}

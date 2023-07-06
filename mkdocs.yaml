@@ -1,0 +1,33 @@
+# This file configures MkDocs. It is used for displaying component
+# documentation (from `./docs/`) in the Developer Portal.
+
+site_name: "pizza-api-app"
+
+plugins:
+  # This one is required for the developer portal
+  - techdocs-core
+
+  # Allow {% include "../some/README.md" %}
+  - include-markdown
+
+  # Allow ![type:video](https://www.youtube.com/embed/LXb3EKWsInQ)
+  - mkdocs-video
+
+  # Search bar scoped to this component docs only
+  - search
+
+  # Docs need backward-compatibility too. Uncomment and adjust when
+  # time comes.
+  #
+  #- redirects:
+  #    redirect_maps:
+  #      'old.md': 'new.md'
+  #      'old/file.md': 'new/file.md'
+  #      'some_file.md': 'http://external.url.com/foobar'
+
+# If you want to customize your navigation you may use a nav: section
+# however, if you do that, you will need to write your entire navigation
+# so please leave it alone when possible and let the folder structure and
+# top-level headings of your documents reflect your intentions, rather.
+#nav:
+#  - Home: index.md

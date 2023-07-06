@@ -1,0 +1,213 @@
+stages:
+  - tf_shared
+  - tf_plan
+  - build
+  - test
+  - sonarcloud
+  - tf_apply
+  - pre_deploy_app
+  - deploy_app
+#  - destroy_app  ### Uncomment, when ready to cleanup
+  - destroy_app
+
+include:
+  - local: iac/terraform/.gitlab-ci.yml
+
+  # Docs building (from ./docs/) for Developer Portal
+  - project: sennder/engineering-effectiveness/devx/techdocs-builder
+    file: /gitlab-ci-templates/child-pipeline.yaml
+
+variables:
+  AWS_DEFAULT_REGION: eu-central-1
+  TF_ROOT: ${CI_PROJECT_DIR}/iac/terraform/app
+  ECR_REPO_BASE_URL: "075050162388.dkr.ecr.eu-central-1.amazonaws.com"
+  ECR_REPO_PATH: "sennder/driver-app/pizza-api-app"
+  ECR_REPO_URL: "${ECR_REPO_BASE_URL}/${ECR_REPO_PATH}"
+  APP_NAME: "pizza-api-app"
+  ENTITY_NAME: "pizza-api-app"
+  TERRAFORM_ENTITY_NAMESPACE: driver-app
+  TF_VAR_git_last_commit_author: ${GITLAB_USER_EMAIL}
+  TF_VAR_git_last_commit_short_sha: ${CI_COMMIT_SHORT_SHA}
+  TF_VAR_git_repository: ${CI_PROJECT_URL}
+  TF_VAR_project_id: ${CI_PROJECT_ID}
+  SENNDER_CHART_VERSION: "^3.0"
+
+.lib.app:changes: &lib_app_changes
+  changes:
+    - deploy/**/*
+    - alembic/**/*
+    - src/**/*
+    - Dockerfile
+    - .gitlab-ci.yml
+
+.lib:app:rules: &lib_app_rules
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_JOB_STAGE != 'deploy_app'
+      <<: *lib_app_changes
+      when: on_success
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_JOB_STAGE == 'deploy_app' && $CI_ENVIRONMENT_NAME == 'dev'
+      <<: *lib_app_changes
+      when: manual
+      allow_failure: true # make the job optional for a pipeline to succeed and the next stages to run
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      <<: *lib_app_changes
+      when: on_success
+
+.build_container:
+  stage: build
+  image:
+    name: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/kaniko:2.1.1
+    entrypoint: [""]
+  before_script:
+    - unset AWS_ACCESS_KEY_ID
+    - unset AWS_SECRET_ACCESS_KEY
+    - mkdir -p /kaniko/.docker
+    - echo "{\"credsStore\":\"ecr-login\"}" > /kaniko/.docker/config.json
+  tags:
+    - small-runners-nw
+  <<: *lib_app_rules
+
+lint:
+  stage: test
+  image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-linter
+  script:
+    - pre-commit run --all-files
+  tags:
+    - small-runners-nw
+  <<: *lib_app_rules
+
+check types:
+  stage: test
+  image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
+  script:
+    - make check-types
+  tags:
+    - small-runners-nw
+  <<: *lib_app_rules
+
+test:
+  stage: test
+  image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
+  
+  services:
+    - postgres:13.3-alpine
+  variables:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: pizza-api-app
+      POSTGRES_DB: pizza-api-app
+      POSTGRES_PORT: 5432
+  
+  script:
+    - make test-with-coverage
+  tags:
+    - small-runners-nw
+  <<: *lib_app_rules
+  artifacts:
+    reports:
+      junit: .test-reports/test-run.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: .test-reports/coverage.xml
+    expire_in: 1 day
+
+
+build app:
+  extends:
+    - .build_container
+  script:
+    - /kaniko/executor --context . --destination ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}
+
+build test:
+  extends:
+    - .build_container
+  script:
+    - /kaniko/executor --context . --build-arg=INSTALL_DEV=true --destination ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
+
+build linter:
+  extends:
+    - .build_container
+  script:
+    - /kaniko/executor --context . --dockerfile=linter.Dockerfile --destination ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-linter
+
+.diff_app:
+  image:
+    name: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/kubernetes:1.1.0 
+    pull_policy: always
+  needs: ["build app"]
+  stage: pre_deploy_app
+  script:
+  - helm senndernetes diff 
+  tags:
+    - small-runners-nw
+  <<: *lib_app_rules
+
+.deploy_app:
+  image:
+    name: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/kubernetes:1.1.0 
+    pull_policy: always
+  stage: deploy_app
+  script:
+    - helm senndernetes upgrade
+  tags:
+    - small-runners-nw
+  <<: *lib_app_rules
+
+.uninstall_app:
+  image:
+    name: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/kubernetes:1.1.0 
+    pull_policy: always
+  stage: teardown_app
+  tags: [small-runners-nw]
+  script:
+    - helm senndernetes uninstall 
+
+
+diff_app:playground:
+  extends: .diff_app
+  variables:
+    CLUSTER_NAME: playground-eks-cluster
+  environment:
+    name: playground
+
+deploy_app:playground:
+  needs:
+    - job: "diff_app:playground"
+    - job: "tf_apply:playground"
+      optional: true
+  extends: .deploy_app
+  variables:
+    CLUSTER_NAME: playground-eks-cluster
+  environment:
+    name: playground
+
+
+
+# uninstall_app:prod:
+#   extends: .uninstall_app
+#   environment:
+#     name: prod
+#     action: stop
+#   when: manual
+
+# uninstall_app:dev:
+#   extends: .uninstall_app
+#   environment:
+#     name: dev
+#     action: stop
+#   when: manual
+
+sonarcloud:
+  stage: sonarcloud
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
+    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
+  script:
+    - sonar-scanner
+

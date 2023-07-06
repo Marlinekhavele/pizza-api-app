@@ -1,0 +1,63 @@
+# Developer Portal integration file
+#
+---
+#
+# System
+#
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  namespace: driver-app
+  name: pizza-api-app
+  title: pizza-api-app System
+spec:
+  owner: group:carriers-and-drivers/driver-app
+
+---
+#
+# Service component
+#
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  namespace: driver-app
+  name: pizza-api-app
+  title: pizza-api-app Microservice
+  description: Backend service for pizza-api-app
+  annotations:
+#    gitlab.com/project-id: '39166734' --> Your GitLab project ID here
+    backstage.io/techdocs-ref: dir:.
+    sennder.io/added-by: autodiscovery
+    sennder.io/developer-portal-is-onboarded: part
+#    datadoghq.com/graph-token: 69e1020c8cba8d9fbbf251053d2450e49a0414d7c344edf3d253b520a6cee4b2 --> your DD graph token here
+#    datadoghq.com/dashboard-url: https://p.datadoghq.eu/sb/tkyxnjj7bkzv9mnr-e5179594e2abd6c3f55ac1fdda784072 --> your DD dashboard URL here
+spec:
+  type: service
+  owner: group:carriers-and-drivers/driver-app
+  system: system:driver-app/driver-app
+  lifecycle: production
+  providesApis:
+    - api:driver-app/pizza-api-app
+  dependsOn:
+    - resource:driver-app/pizza-api-app-db
+
+
+
+
+---
+#
+# Database
+#
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  namespace: driver-app
+  name: pizza-api-app-db
+  title: pizza-api-app DB
+  description: The RDS database for pizza-api-app microservice
+spec:
+  type: database
+  owner:  group:carriers-and-drivers/driver-app
+  system: system:driver-app/pizza-api-app
+  lifecycle: production
+

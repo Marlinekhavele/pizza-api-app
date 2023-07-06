@@ -1,0 +1,80 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+      "title": "pizza-api-app",
+      "version": "0.1.0"
+    },
+    "paths": {
+      "/api/health/": {
+        "get": {
+          "tags": [
+            "health"
+          ],
+          "summary": "Health",
+          "operationId": "health_api_health__get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "title": "Response Health Api Health  Get",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/health": {
+        "get": {
+          "tags": [
+            "health"
+          ],
+          "summary": "Health",
+          "operationId": "health_api_health_get",
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "title": "Response Health Api Health Get",
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "security": [
+      {
+        "authorization": [],
+        "authorization-host": []
+      }
+    ],
+    "servers": [
+      {
+        "url": "https://api.dev.cloud.sennder.com/pizza-api-app",
+        "description": "DEV"
+      },
+      {
+        "url": "https://api.cloud.sennder.com/pizza-api-app",
+        "description": "PROD"
+      },
+      {
+        "url": "http://localhost:{port}",
+        "description": "local",
+        "variables": {
+          "port": {
+            "default": 8054
+          }
+        }
+      }
+    ]
+  }
+  
+  
