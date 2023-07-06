@@ -3,7 +3,7 @@ stages:
   - tf_plan
   - build
   - test
-  - sonarcloud
+  -  quality_check 
   - tf_apply
   - pre_deploy_app
   - deploy_app
@@ -85,17 +85,28 @@ check types:
     - small-runners-nw
   <<: *lib_app_rules
 
-test:
-  stage: test
+test:app:
+  stage: quality_check
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
-  
   services:
-    - postgres:13.3-alpine
+    - name: postgis/postgis:14-master
+      alias: db
+      command: [ "-p 5432" ]
   variables:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: pizza-api-app
-      POSTGRES_DB: pizza-api-app
-      POSTGRES_PORT: 5432
+    PGDATA: /var/lib/postgresql/data/pgdata
+    POSTGRES_HOST: localhost
+    POSTGRES_DB: pizza-api-app
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: password
+
+  # services:
+  #   - postgres:13.3-alpine
+
+  # variables:
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DB: pizza-api-app
+  #     POSTGRES_PORT: 5432
   
   script:
     - make test-with-coverage
@@ -210,4 +221,9 @@ sonarcloud:
       - .sonar/cache
   script:
     - sonar-scanner
+ needs: ["test:app"]
+  tags:
+    - small-runners-nw
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
 

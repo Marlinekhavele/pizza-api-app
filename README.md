@@ -1,4 +1,19 @@
-# EKS Microservice template
+# Pizza API Service
+ The Pizza API Service that maintains Marline's Pizza shop and all data storage.
+
+ - Customer
+ - Orders
+ - Products
+
+ The pizza API is a developed with [FastAPI](https://fastapi.tiangolo.com/) and served up using  [uvicorn](https://www.uvicorn.org/)
+
+ The database used is postgres.
+
+ The API performs basic functionality that is CRUD(Creat, Read, Update, Delete) operation.
+
+![Pizza Shop Design](Pizza shop.png)
+
+## EKS Microservice template
 
 If this is your first time here, please read [Our getting started guide](https://senndergmh.atlassian.net/wiki/spaces/PLE/pages/1609302474/Getting+started+with+SennCloud) first.
 
@@ -19,7 +34,44 @@ A service template (we're basically not python developers) - tldr; everything th
 - optional database support (RDS)
 - extra cheese
 
-## Quickstart
+## Running the service locally
+Before installation ensure you installed poetry and setup a virtual environment
+ ```shell
+    poetry config virtualenvs.in-project true
+```
+
+After cloning the project on your development environment you will run this will install all the project dependencies.
+```shell
+poetry install
+```
+some environment variables you will use inside your `.env`file just copy this.
+```shell
+DB_USER=postgres
+DB_HOST=localhost
+DB_NAME=pizza_api
+DB_PASSWORD=password
+```
+
+To spin up the service locally you can run `make serve ` this will start the service.[Docker compose](https://gitlab.com/sennder/carriers-drivers/driver-app/pizza-api/-/blob/main/docker-compose.yaml)
+
+service configuration has two DB services:
+- `make start` will start the docker database containers locally
+- `pizza-api-db` bound to port 5432 - a DB for local testing,
+- `pizza-api-db-test` bound to port 5433 - a DB for the project's  tests (`src/tests`).
+
+To  create database Migration run when adding a new Model always use `alembic upgrade head` to ensure you didn't have incorrect migration or just checking if you are starting on a clean slate.
+```shell
+alembic revision --autogenerate -m <your migration message here/>
+```
+### Testing
+
+1. Ensure development services have been started with `make serve`.
+2. Run pytest with poetry:
+```shell
+poetry run pytest
+```
+
+
 
 **⚠️⚠️ Please use the develop branch on your first commit, otherwise you may find weird behaviours on the CI pipelines ⚠️⚠️**
 
@@ -27,7 +79,7 @@ A service template (we're basically not python developers) - tldr; everything th
 
 ```sh
 # Enter project directory
-cd <repo_name>
+cd <pizza-api-app>
 
 # Initialise git repo
 git init
@@ -58,8 +110,8 @@ You can access your service via the API Gateway in two environments:
 
 | Environment   | URL                                          |
 | --------------|:--------------------------------------------:|
-| dev           | https://api.dev.cloud.sennder.com/<app_name> |
-| prod          | https://api.cloud.sennder.com/<app_name>     |
+| dev           | https://api.dev.cloud.sennder.com/<pizza-api-app> |
+| prod          | https://api.cloud.sennder.com/<pizza-api-app>     |
 
 Your service will be automatically secured via a lambda authorizer in the API Gateway. In order to access your services resources, add an 'Authorization: ' Header to your request containing a mothership token for either (staging) `https://sennder-sennder.stg.sennder.com` or (production) `https://api.sennder.com/`.
 
@@ -78,7 +130,7 @@ $ curl 'https://sennder-sennder.stg.sennder.com/auth/login/' \
   "key": "TOKEN"
 }
 
-$ curl -v -H "Authorization: Token TOKEN" https://api.dev.cloud.sennder.com/<app_name>/api/v1/health | jq
+$ curl -v -H "Authorization: Token TOKEN" https://api.dev.cloud.sennder.com/<pizza-api-app>/api/v1/health | jq
 ```
 
 ## Database integration
