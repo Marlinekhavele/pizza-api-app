@@ -3,7 +3,7 @@ stages:
   - tf_plan
   - build
   - test
-  -  quality_check 
+  - quality_check 
   - tf_apply
   - pre_deploy_app
   - deploy_app
@@ -68,7 +68,7 @@ variables:
   <<: *lib_app_rules
 
 lint:
-  stage: test
+  stage: quality_check
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-linter
   script:
     - pre-commit run --all-files
@@ -77,7 +77,7 @@ lint:
   <<: *lib_app_rules
 
 check types:
-  stage: test
+  stage: quality_check
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
   script:
     - make check-types
