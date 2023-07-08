@@ -37,13 +37,7 @@ variables:
     - src/**/*
     - Dockerfile
     - .gitlab-ci.yml
-.lib.app:changes: &lib_app_changes
-  changes:
-    - deploy/**/*
-    - alembic/**/*
-    - src/**/*
-    - Dockerfile
-    - .gitlab-ci.yml
+
 
 .lib:app:rules: &lib_app_rules
   rules:
@@ -101,7 +95,7 @@ test:
   variables:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: postgres
-      POSTGRES_DB: pizza-api-app
+      POSTGRES_DB: pizza_api_app
       POSTGRES_PORT: 5432
   
   script:
