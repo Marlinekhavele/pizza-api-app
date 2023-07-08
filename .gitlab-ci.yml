@@ -3,12 +3,10 @@ stages:
   - tf_plan
   - build
   - test
-  - quality_check 
   - tf_apply
   - pre_deploy_app
   - deploy_app
-#  - destroy_app  ### Uncomment, when ready to cleanup
-  - destroy_app
+
 
 include:
   - local: iac/terraform/.gitlab-ci.yml
@@ -32,6 +30,13 @@ variables:
   TF_VAR_project_id: ${CI_PROJECT_ID}
   SENNDER_CHART_VERSION: "^3.0"
 
+.lib.app:changes: &lib_app_changes
+  changes:
+    - deploy/**/*
+    - alembic/**/*
+    - src/**/*
+    - Dockerfile
+    - .gitlab-ci.yml
 .lib.app:changes: &lib_app_changes
   changes:
     - deploy/**/*
@@ -68,7 +73,7 @@ variables:
   <<: *lib_app_rules
 
 lint:
-  stage: quality_check
+  stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-linter
   script:
     - pre-commit run --all-files
@@ -77,7 +82,7 @@ lint:
   <<: *lib_app_rules
 
 check types:
-  stage: quality_check
+  stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
   script:
     - make check-types
@@ -85,28 +90,19 @@ check types:
     - small-runners-nw
   <<: *lib_app_rules
 
-test:app:
-  stage: quality_check
+test:
+  stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
+
+  
   services:
-    - name: postgis/postgis:14-master
-      alias: db
-      command: [ "-p 5432" ]
+    - postgres:13.3-alpine
+
   variables:
-    PGDATA: /var/lib/postgresql/data/pgdata
-    POSTGRES_HOST: localhost
-    POSTGRES_DB: pizza-api-app
-    POSTGRES_USER: postgres
-    POSTGRES_PASSWORD: password
-
-  # services:
-  #   - postgres:13.3-alpine
-
-  # variables:
-  #     POSTGRES_PASSWORD: password
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_DB: pizza-api-app
-  #     POSTGRES_PORT: 5432
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DB: pizza-api-app
+      POSTGRES_PORT: 5432
   
   script:
     - make test-with-coverage
@@ -120,6 +116,7 @@ test:app:
         coverage_format: cobertura
         path: .test-reports/coverage.xml
     expire_in: 1 day
+
 
 
 build app:
@@ -173,23 +170,47 @@ build linter:
     - helm senndernetes uninstall 
 
 
-diff_app:playground:
+diff_app:dev:
   extends: .diff_app
-  variables:
-    CLUSTER_NAME: playground-eks-cluster
   environment:
-    name: playground
+    name: dev
 
-deploy_app:playground:
+diff_app:uat:
+  extends: .diff_app
+  environment:
+    name: uat
+
+diff_app:prod:
+  extends: .diff_app
+  environment:
+    name: prod
+
+deploy_app:dev:
   needs:
-    - job: "diff_app:playground"
-    - job: "tf_apply:playground"
+    - job: "diff_app:dev"
+    - job: "tf_apply:dev"
       optional: true
   extends: .deploy_app
-  variables:
-    CLUSTER_NAME: playground-eks-cluster
   environment:
-    name: playground
+    name: dev
+
+deploy_app:uat:
+  needs:
+    - job: "diff_app:uat"
+    - job: "tf_apply:uat"
+      optional: true
+  extends: .deploy_app
+  environment:
+    name: uat
+
+deploy_app:prod:
+  needs:
+    - job: "diff_app:prod"
+    - job: "tf_apply:prod"
+      optional: true
+  extends: .deploy_app
+  environment:
+    name: prod
 
 
 
@@ -206,24 +227,4 @@ deploy_app:playground:
 #     name: dev
 #     action: stop
 #   when: manual
-
-# sonarcloud:
-#   stage: quality_check
-#   variables:
-#     SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-#     GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
-#   image:
-#     name: sonarsource/sonar-scanner-cli:latest
-#     entrypoint: [""]
-#   cache:
-#     key: "${CI_JOB_NAME}"
-#     paths:
-#       - .sonar/cache
-#   script:
-#     - sonar-scanner
-#   needs: ["test:app"]
-#   tags:
-#     - small-runners-nw
-#   rules:
-#     - if: '$CI_PIPELINE_SOURCE == "push"'
 
