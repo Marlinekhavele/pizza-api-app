@@ -93,17 +93,8 @@ check types:
 test:
   stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
-  # services:
-  #   - name: postgis/postgis:14-master
-  #     alias: db
-  #     command: [ "-p 5432" ]
-  # variables:
-  #   PGDATA: /var/lib/postgresql/data/pgdata
-  #   POSTGRES_HOST: localhost
-  #   POSTGRES_DB: pizza-api-app
-  #   POSTGRES_USER: postgres
-  #   POSTGRES_PASSWORD: password
 
+  
   services:
     - postgres:13.3-alpine
 
