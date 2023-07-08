@@ -1,0 +1,40 @@
+version: "3.3"
+services:
+  pizza-api-app-db:
+    image: postgis/postgis:14-master
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pizza_api_app_db
+    ports:
+      - 5432:5432
+    volumes:
+      - pizza_api_app_db_data:/var/lib/postgresql/data/
+
+
+  pizza-api-app-db-test:
+    image: postgis/postgis:14-master
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pizza_api_app_test_db
+    ports:
+      - 5433:5432
+    volumes:
+      - pizza_api_app_test_db_data:/var/lib/postgresql/data/
+
+
+volumes:
+  pizza_api_app_db_data:
+    driver: "local"
+    name: "pizza_api_app_db_data"
+
+  pizza_api_app_test_db_data:
+    driver: "local"
+    name: "pizza_api_app_test_db_data"
+  
+
+
+
+
+

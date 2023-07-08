@@ -30,6 +30,15 @@ dist/
 .LSOverride
 .tmuxp.*
 
+# dotenv
+*.env
+.dev.env
+*.dev.env
+
+# virtualenv
+*.venv
+venv/
+ENV/
 
 sonarcloud.py
 

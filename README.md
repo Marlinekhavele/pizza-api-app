@@ -48,7 +48,7 @@ some environment variables you will use inside your `.env`file just copy this.
 ```shell
 DB_USER=postgres
 DB_HOST=localhost
-DB_NAME=pizza_api
+DB_NAME=pizza_api_app_db
 DB_PASSWORD=password
 ```
 
@@ -56,8 +56,8 @@ To spin up the service locally you can run `make serve ` this will start the ser
 
 service configuration has two DB services:
 - `make start` will start the docker database containers locally
-- `pizza-api-db` bound to port 5432 - a DB for local testing,
-- `pizza-api-db-test` bound to port 5433 - a DB for the project's  tests (`src/tests`).
+- `pizza_api_app_db` bound to port 5432 - a DB for local testing,
+- `pizza_api_app_db_test` bound to port 5433 - a DB for the project's  tests (`src/tests`).
 
 To  create database Migration run when adding a new Model always use `alembic upgrade head` to ensure you didn't have incorrect migration or just checking if you are starting on a clean slate.
 ```shell
@@ -79,7 +79,7 @@ poetry run pytest
 
 ```sh
 # Enter project directory
-cd <pizza-api-app>
+cd pizza-api-app
 
 # Initialise git repo
 git init
@@ -130,7 +130,7 @@ $ curl 'https://sennder-sennder.stg.sennder.com/auth/login/' \
   "key": "TOKEN"
 }
 
-$ curl -v -H "Authorization: Token TOKEN" https://api.dev.cloud.sennder.com/<pizza-api-app>/api/v1/health | jq
+$ curl -v -H "Authorization: Token TOKEN" https://api.dev.cloud.sennder.com/pizza-api-app/api/v1/health | jq
 ```
 
 ## Database integration
