@@ -71,7 +71,7 @@ async def update_customer_id(id: uuid.UUID, customer: CustomerSchema, db: AsyncS
     """
     Update customer details using their ID that is in the database
     """
-    db_customer = await db.execute(select(Customer).filter(Customer.id == id))
+    db_customer: Customer = await db.execute(select(Customer).filter(Customer.id == id))
     #retrieves the single result row from the executed query, if any. 
     # If there are no results, it returns None.
     #This line assumes that only one customer with the given UUID exists in the database.

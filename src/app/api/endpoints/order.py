@@ -59,7 +59,7 @@ async def update_orders_id(id: uuid.UUID, order: OrderSchema, db: AsyncSession =
     """
     Update order details using their ID that is in the database
     """
-    db_order = await db.execute(select(Order).filter(Order.id == id))
+    db_order: Order = await db.execute(select(Order).filter(Order.id == id))
     order_obj = db_order.scalar_one_or_none()
 
     if order_obj:
@@ -124,11 +124,11 @@ async def get_order_items_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_se
 
 
 @router.put("/orders/{id}/items")
-async def update_order_items_id(id: uuid.UUID, order_item:OrderItemSchema,db: AsyncSession = Depends(get_db_session)):
+async def update_order_items_id(id: uuid.UUID, order_item:OrderItemSchema,db: AsyncSession = Depends(get_db_session)) -> OrderItem:
     """
     Update order items for a specific order using an ID
     """
-    db_order_item = await db.execute(select(OrderItem).filter(OrderItem.id == id))
+    db_order_item: OrderItem = await db.execute(select(OrderItem).filter(OrderItem.id == id))
     order_item_obj = db_order_item.scalar_one_or_none()
 
     if order_item_obj:

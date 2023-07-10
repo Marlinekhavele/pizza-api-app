@@ -47,11 +47,11 @@ async def get_product_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session)
     return product_obj
 
 @router.put("/products/{id}")
-async def update_product_id(id: uuid.UUID, product: ProductSchema, db: AsyncSession = Depends(get_db_session)):
+async def update_product_id(id: uuid.UUID, product: ProductSchema, db: AsyncSession = Depends(get_db_session)) -> Product:
     """
     Update product details using their ID that is in the database
     """
-    db_product = await db.execute(select(Product).filter(Product.id == id))
+    db_product: Product = await db.execute(select(Product).filter(Product.id == id))
     product_obj = db_product.scalar_one_or_none()
 
     if product_obj:
@@ -108,13 +108,13 @@ async def get_products_flavours_id(id: uuid.UUID,db:AsyncSession = Depends(get_d
 
 
 @router.put("/products/{id}/flavours")
-async def update_products_flavours_id(id: uuid.UUID, product_flavour: ProductFlavourSchema, db: AsyncSession = Depends(get_db_session)):
+async def update_products_flavours_id(id: uuid.UUID, product_flavour: ProductFlavourSchema, db: AsyncSession = Depends(get_db_session)) ->ProductFlavour:
     """
     Update products flavours details using ID's that are stored  database, here 
     - we can update a field like:
     - title 
     """
-    db_product_flavour = await db.execute(select(ProductFlavour).filter(ProductFlavour.id == id))
+    db_product_flavour: ProductFlavour = await db.execute(select(ProductFlavour).filter(ProductFlavour.id == id))
     product_flavour_obj = db_product_flavour.scalar_one_or_none()
 
     if product_flavour_obj:
@@ -164,13 +164,13 @@ async def get_products_sizes_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_s
     return product_size_obj
 
 @router.put("/products/{id}/sizes")
-async def update_products_sizes_id(id: uuid.UUID, product_size: ProductSizeSchema, db: AsyncSession = Depends(get_db_session)):
+async def update_products_sizes_id(id: uuid.UUID, product_size: ProductSizeSchema, db: AsyncSession = Depends(get_db_session)) -> ProductSize:
     """
     Update products sizes details using ID's that are stored  database, here 
     - we can update a field like:
     - title 
     """
-    db_product_size = await db.execute(select(ProductSize).filter(ProductSize.id == id))
+    db_product_size: ProductSize = await db.execute(select(ProductSize).filter(ProductSize.id == id))
     product_size_obj = db_product_size.scalar_one_or_none()
 
     if product_size_obj:
