@@ -25,11 +25,11 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 #CRUD Operation
 
 @router.post("/customers/")
-async def create_customer(customer: CustomerSchema,db:AsyncSession = Depends(get_db_session))-> Customer:
+async def create_customer(customer: CustomerSchema,db:AsyncSession = Depends(get_db_session)) -> Customer:
     """
     Create a Customer and store it in the database
     """
-    new_customer=Customer(
+    new_customer = Customer(
         id=customer.id,
         name=customer.name,
         phone=customer.phone,
@@ -52,11 +52,11 @@ async def get_customers(db:AsyncSession = Depends(get_db_session))-> List[Custom
     return customers
 
 @router.get("/customers/{id}")
-async def get_customer_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session))-> Customer:
+async def get_customer_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session)) -> Customer:
     """
     Get customers that are in the database by id
     """
-    customer: Customer = await db.execute(select(Customer).filter(Customer.id == id))
+    customer = await db.execute(select(Customer).filter(Customer.id == id))
     #retrieves the single result row from the executed query, if any. 
     # If there are no results, it returns None.
     #This line assumes that only one customer with the given UUID exists in the database.
@@ -67,11 +67,11 @@ async def get_customer_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session
     return customer_obj
 
 @router.put("/customers/{id}")
-async def update_customer_id(id: uuid.UUID, customer: CustomerSchema, db: AsyncSession = Depends(get_db_session))-> Customer:
+async def update_customer_id(id: uuid.UUID, customer: CustomerSchema, db: AsyncSession = Depends(get_db_session)) -> Customer:
     """
     Update customer details using their ID that is in the database
     """
-    db_customer: Customer = await db.execute(select(Customer).filter(Customer.id == id))
+    db_customer = await db.execute(select(Customer).filter(Customer.id == id))
     #retrieves the single result row from the executed query, if any. 
     # If there are no results, it returns None.
     #This line assumes that only one customer with the given UUID exists in the database.
@@ -90,11 +90,11 @@ async def update_customer_id(id: uuid.UUID, customer: CustomerSchema, db: AsyncS
 
 
 @router.delete("/customers/{id}")
-async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session))-> Customer:
+async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)) -> Customer:
     """
     Delete customer details using their UUID that is stored in the database
     """
-    customer: Customer = await db.execute(select(Customer).filter(Customer.id == id))
+    customer = await db.execute(select(Customer).filter(Customer.id == id))
     #retrieves the single result row from the executed query if any. I
     # f there are no results, it returns None.
     customer_obj = customer.scalar_one_or_none()

@@ -1,29 +1,5 @@
-# Pizza API Service
- The Pizza API Service that maintains Marline's Pizza shop and all data storage.
-
- - Customer
- - Orders
- - Products
-
- The pizza API is a developed with [FastAPI](https://fastapi.tiangolo.com/) and served up using  [uvicorn](https://www.uvicorn.org/)
-
- The database used is postgres.
-
- The API performs basic functionality that is CRUD(Creat, Read, Update, Delete) operation.
-
-![Pizza Shop Design](Pizza shop.png)
-
 ## EKS Microservice template
-
 If this is your first time here, please read [Our getting started guide](https://senndergmh.atlassian.net/wiki/spaces/PLE/pages/1609302474/Getting+started+with+SennCloud) first.
-
-## What it is
-
-This repository is the InfraOps team reference implementation of a microservice in EKS using Terraform and Helm.
-
-## What it is not
-
-A service template (we're basically not python developers) - tldr; everything that's under `src` : Handle with care!
 
 ## Features
 - state of the art EKS deployment
@@ -33,6 +9,22 @@ A service template (we're basically not python developers) - tldr; everything th
 - fully templated
 - optional database support (RDS)
 - extra cheese
+
+
+## Pizza API Service
+ The Pizza API Service  refrence implementatation of a Microservice in EKS using Terraform and Helmm that maintains Marline's Pizza shop and all data storage.
+
+ - Customer
+ - Orders
+ - Products
+
+ The pizza API is a developed with [FastAPI](https://fastapi.tiangolo.com/) and served up using[uvicorn](https://www.uvicorn.org/)
+
+ The database used is postgres.
+
+ The API performs basic functionality that is CRUD(Creat, Read, Update, Delete) operation.
+
+![Pizza Shop Design](Pizza shop.png)
 
 ## Running the service locally
 Before installation ensure you installed poetry and setup a virtual environment
@@ -52,7 +44,7 @@ DB_NAME=pizza_api_app_db
 DB_PASSWORD=password
 ```
 
-To spin up the service locally you can run `make serve ` this will start the service.[Docker compose](https://gitlab.com/sennder/carriers-drivers/driver-app/pizza-api/-/blob/main/docker-compose.yaml)
+To spin up the service locally you can run `make serve ` this will start the service.[Docker compose](https://gitlab.com/sennder/carriers-drivers/driver-app/pizza-api-app/-/blob/main/docker-compose.yml)
 
 service configuration has two DB services:
 - `make start` will start the docker database containers locally
@@ -70,39 +62,10 @@ alembic revision --autogenerate -m <your migration message here/>
 ```shell
 poetry run pytest
 ```
-
-
-
 **⚠️⚠️ Please use the develop branch on your first commit, otherwise you may find weird behaviours on the CI pipelines ⚠️⚠️**
 
 **⚠️💻 If you haven't set a Personal Access Token to execute Terraform locally, check first this [link](https://sennder.atlassian.net/wiki/spaces/PLE/pages/2473459723/Using+GitLab+s+Terraform+module+registry#Local-setup)! 💻⚠️**
 
-```sh
-# Enter project directory
-cd pizza-api-app
-
-# Initialise git repo
-git init
-```
-
-<!-- ## Setting up your dev infrastructure from local
-
-```sh
-# Change directory to iac/
-cd iac/
-
-# Plan your shared infrastructure resources (ECR)
-./plan.sh shared
-
-# Apply your shared infrastructure resources (ECR)
-./apply.sh shared
-
-# Plan your dev infrastructure resources (ECS, ...)
-./plan.sh dev
-
-# Apply your dev infrastructure resources (ECS, ...)
-./apply.sh shared
-``` -->
 
 ## API Gateway integration
 
@@ -150,18 +113,3 @@ Your database will be set up as follows:
 
 Those values will be automatically injected as environment variables into your ECS service.
 
-## SonarCloud Integration
-If you chose the SonarCloud Option, the SonarCloud Job has been added to your pipeline.
-
-### You need a couple more steps to activate it!
-1. Run the script in the project's root directory `sonarcloud.py`\
-Which offers a handy cli which will call SonarCloud API to create project under [sennder org](https://sonarcloud.io/organizations/sennder/projects).
-> Instructions on how to run the script are self-contained within the CLI.
-
-2. Add the following env vars to your project's CI. In GitLab, go to Settings > CI/CD > Variables.
-  - Define the SONAR_TOKEN = "token generated for your project after running above script"
-    - Make sure that the Protect variable checkbox is unticked\
-    - Make sure that the Mask variable checkbox is ticked.
-  - Define the SONAR_HOST_URL = https://sonarcloud.io
-    - Make sure that the Protect variable checkbox is unticked\
-    - No need to tick the Mask variable checkbox this time.

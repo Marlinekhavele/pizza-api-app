@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import AsyncGenerator
+from typing import AsyncGenerator,List
 from app.database.session import SessionLocal
 from app.schemas import(OrderSchema,OrderItemSchema) 
 from app.models import Order,OrderItem
@@ -24,7 +24,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 
 # CRUD orders 
 @router.post("/orders/")
-async def create_order(order: OrderSchema,db:AsyncSession = Depends(get_db_session)):
+async def create_order(order: OrderSchema,db:AsyncSession = Depends(get_db_session)) -> Order:
     """
     Create a orders and store it in the database
     """
@@ -34,6 +34,16 @@ async def create_order(order: OrderSchema,db:AsyncSession = Depends(get_db_sessi
     await db.commit()
     await db.refresh(new_order)
     return new_order
+
+@router.get("/orders/")
+async def get_orders(db:AsyncSession = Depends(get_db_session))-> List[Order]:
+    """
+    Get all orders that are in the database
+    """
+    results = await db.execute(select(Order))
+    #This method retrieves all the objects from the query result set and returns them as a list.
+    orders = results.scalars().all()
+    return orders
 
 @router.get("/orders/{id}")
 async def get_orders_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session)):
@@ -45,7 +55,7 @@ async def get_orders_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session))
     return order_obj
 
 @router.put("/orders/{id}")
-async def update_orders_id(id: uuid.UUID, order: OrderSchema, db: AsyncSession = Depends(get_db_session)):
+async def update_orders_id(id: uuid.UUID, order: OrderSchema, db: AsyncSession = Depends(get_db_session))-> Order:
     """
     Update order details using their ID that is in the database
     """
@@ -62,7 +72,7 @@ async def update_orders_id(id: uuid.UUID, order: OrderSchema, db: AsyncSession =
 
 
 @router.delete("/orders/{id}")
-async def delete_order_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
+async def delete_order_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session))-> Order:
     """
     Delete order details using their UUID that is stored in the database
     """
