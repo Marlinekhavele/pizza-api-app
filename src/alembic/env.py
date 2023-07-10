@@ -4,7 +4,7 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 from app .models import Customer
 from app.settings import settings
-from app.models import metadata
+
 from alembic import context
 
 

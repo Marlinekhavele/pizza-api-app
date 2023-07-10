@@ -9,7 +9,7 @@ import uuid
 
 router = APIRouter()
 
-#CRUD
+# Responsible for creating and managing database sessions with async
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     async with SessionLocal() as session:
         try:
@@ -21,6 +21,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
             await session.commit()
 
 
+#CRUD Operation
 
 @router.post("/customers/")
 async def create_customer(customer: CustomerSchema,db:AsyncSession = Depends(get_db_session)):
@@ -40,6 +41,7 @@ async def get_customers(db:AsyncSession = Depends(get_db_session)):
     Get customers that are in the database
     """
     results = await db.execute(select(Customer))
+    #This method retrieves all the objects from the query result set and returns them as a list.
     customers = results.scalars().all()
     return customers
 
@@ -49,6 +51,10 @@ async def get_customer_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session
     Get customers that are in the database by id
     """
     customer = await db.execute(select(Customer).filter(Customer.id == id))
+    #retrieves the single result row from the executed query, if any. 
+    # If there are no results, it returns None.
+    #This line assumes that only one customer with the given UUID exists in the database.
+
     customer_obj = customer.scalar_one_or_none()
 
 
@@ -60,6 +66,10 @@ async def update_customer_id(id: uuid.UUID, customer: CustomerSchema, db: AsyncS
     Update customer details using their ID that is in the database
     """
     db_customer = await db.execute(select(Customer).filter(Customer.id == id))
+    #retrieves the single result row from the executed query, if any. 
+    # If there are no results, it returns None.
+    #This line assumes that only one customer with the given UUID exists in the database.
+
     customer_obj = db_customer.scalar_one_or_none()
 
     if customer_obj:
@@ -77,6 +87,8 @@ async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_se
     Delete customer details using their UUID that is stored in the database
     """
     customer = await db.execute(select(Customer).filter(Customer.id == id))
+    #retrieves the single result row from the executed query if any. I
+    # f there are no results, it returns None.
     customer_obj = customer.scalar_one_or_none()
 
     if customer_obj:
@@ -84,3 +96,4 @@ async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_se
         await db.commit()
 
     return customer_obj
+
