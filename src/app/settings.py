@@ -9,12 +9,12 @@ class Settings(BaseSettings):
     DD_DOGSTATSD_PORT: Optional[int] = None
     SENTRY_DSN: Optional[str] = None
 
-      # PostgreSQL
-    DB_HOST: str
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_PORT: int
-    DB_NAME: str
+    # PostgreSQL
+    DB_HOST: str = "localhost"
+    DB_USER: str = "postgres"
+    DB_PASSWORD: str = "password"
+    DB_PORT: int = 5432
+    DB_NAME: str = "pizza_api_app"
 
     @property
     def DB_URL(self) -> str:

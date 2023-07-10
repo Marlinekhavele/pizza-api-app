@@ -11,6 +11,7 @@ engine = create_async_engine(
     connect_args={"server_settings": {"jit": "off"}},
 
 )
+#session maker
 SessionLocal = sessionmaker(
     bind=engine, autoflush=False, expire_on_commit=False, class_=AsyncSession
 )

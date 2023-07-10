@@ -88,7 +88,7 @@ test:
   stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
 
-  
+
   services:
     - postgres:13.3-alpine
 

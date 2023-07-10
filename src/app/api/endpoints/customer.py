@@ -50,7 +50,7 @@ async def get_customer_id(id: uuid.UUID,db:AsyncSession = Depends(get_db_session
     """
     Get customers that are in the database by id
     """
-    customer = await db.execute(select(Customer).filter(Customer.id == id))
+    customer:Customer = await db.execute(select(Customer).filter(Customer.id == id))
     #retrieves the single result row from the executed query, if any. 
     # If there are no results, it returns None.
     #This line assumes that only one customer with the given UUID exists in the database.
@@ -65,7 +65,7 @@ async def update_customer_id(id: uuid.UUID, customer: CustomerSchema, db: AsyncS
     """
     Update customer details using their ID that is in the database
     """
-    db_customer = await db.execute(select(Customer).filter(Customer.id == id))
+    db_customer:Customer = await db.execute(select(Customer).filter(Customer.id == id))
     #retrieves the single result row from the executed query, if any. 
     # If there are no results, it returns None.
     #This line assumes that only one customer with the given UUID exists in the database.
@@ -86,7 +86,7 @@ async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_se
     """
     Delete customer details using their UUID that is stored in the database
     """
-    customer = await db.execute(select(Customer).filter(Customer.id == id))
+    customer:Customer = await db.execute(select(Customer).filter(Customer.id == id))
     #retrieves the single result row from the executed query if any. I
     # f there are no results, it returns None.
     customer_obj = customer.scalar_one_or_none()

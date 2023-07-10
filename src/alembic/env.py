@@ -2,7 +2,11 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
-from app .models import Customer
+from app .models import (
+    Customer,
+    Product,
+    Order
+)
 from app.settings import settings
 
 from alembic import context
@@ -22,7 +26,8 @@ fileConfig(config.config_file_name)
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 target_metadata = [Customer.metadata]
-
+target_metadata = [Order.metadata]
+target_metadata = [Product.metadata]
 
 
 # other values from the config, defined by the needs of env.py,
