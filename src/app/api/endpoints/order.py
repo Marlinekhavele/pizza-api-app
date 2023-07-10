@@ -20,6 +20,8 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         else:
             await session.commit()
 
+
+
 # CRUD orders 
 @router.post("/orders/")
 async def create_order(order: OrderSchema,db:AsyncSession = Depends(get_db_session)):
@@ -57,6 +59,8 @@ async def update_orders_id(id: uuid.UUID, order: OrderSchema, db: AsyncSession =
 
     return order_obj
 
+
+
 @router.delete("/orders/{id}")
 async def delete_order_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
     """
@@ -70,6 +74,8 @@ async def delete_order_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_sessi
         await db.commit()
 
     return order_obj
+
+
 
 ### Creating CRUD for orderitems
 
@@ -105,6 +111,8 @@ async def get_order_items_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_se
     return order_items.scalars().all()
 
 
+
+
 @router.put("/orders/{id}/items")
 async def update_order_items_id(id: uuid.UUID, order_item:OrderItemSchema,db: AsyncSession = Depends(get_db_session)):
     """
@@ -136,3 +144,4 @@ async def delete_order_items_id(id: uuid.UUID, db: AsyncSession = Depends(get_db
         db.delete(order_item)
     await db.commit()
     return {"message":"Order item deleted"}
+

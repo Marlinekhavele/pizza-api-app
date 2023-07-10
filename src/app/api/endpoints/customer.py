@@ -21,6 +21,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
             await session.commit()
 
 
+
 #CRUD Operation
 
 @router.post("/customers/")
@@ -81,6 +82,8 @@ async def update_customer_id(id: uuid.UUID, customer: CustomerSchema, db: AsyncS
 
     return customer_obj
 
+
+
 @router.delete("/customers/{id}")
 async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
     """
@@ -96,4 +99,6 @@ async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_se
         await db.commit()
 
     return customer_obj
+
+
 

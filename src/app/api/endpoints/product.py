@@ -20,6 +20,7 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
         else:
             await session.commit()
 
+
 # CRUD products
 @router.post("/products/")
 async def create_product(product: ProductSchema,db:AsyncSession = Depends(get_db_session)):
@@ -62,6 +63,8 @@ async def update_product_id(id: uuid.UUID, product: ProductSchema, db: AsyncSess
 
     return product_obj
 
+
+
 @router.delete("/products/{id}")
 async def delete_product_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
     """
@@ -75,6 +78,9 @@ async def delete_product_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_ses
         await db.commit()
 
     return product_obj
+
+
+
 
 # CRUD productFlavour
 @router.post("/products/flavours")
@@ -99,6 +105,8 @@ async def get_products_flavours_id(id: uuid.UUID,db:AsyncSession = Depends(get_d
     product_falvour_obj = product_flavour.scalar_one_or_none()
     return product_falvour_obj
 
+
+
 @router.put("/products/{id}/flavours")
 async def update_products_flavours_id(id: uuid.UUID, product_flavour: ProductFlavourSchema, db: AsyncSession = Depends(get_db_session)):
     """
@@ -114,6 +122,8 @@ async def update_products_flavours_id(id: uuid.UUID, product_flavour: ProductFla
         await db.commit()
 
     return product_flavour_obj
+
+
 
 @router.delete("/products/{id}/flavours")
 async def delete_products_flavours_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
@@ -169,6 +179,8 @@ async def update_products_sizes_id(id: uuid.UUID, product_size: ProductSizeSchem
 
     return product_size_obj
 
+
+
 @router.delete("/products/{id}/sizes")
 async def delete_products_sizes_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
     """
@@ -182,3 +194,4 @@ async def delete_products_sizes_id(id: uuid.UUID, db: AsyncSession = Depends(get
         await db.commit()
 
     return product_size
+
