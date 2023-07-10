@@ -15,10 +15,7 @@ from app.settings import settings
 app = FastAPI(
     title="pizza-api-app",
     middleware=[Middleware(ContextMiddleware)],
-    root_path="pizza-api-app",
-    openapi_url="/docs/openapi.json",
-    docs_url="/docs/",
-    redocs_url="/docs/redocs/",
+    
 )
 
 app.openapi = OpenApiDocumentation(app).custom_openapi  # type: ignore

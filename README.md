@@ -57,7 +57,7 @@ To spin up the service locally you can run `make serve ` this will start the ser
 service configuration has two DB services:
 - `make start` will start the docker database containers locally
 - `pizza_api_app_db` bound to port 5432 - a DB for local testing,
-- `pizza_api_app_db_test` bound to port 5433 - a DB for the project's  tests (`src/tests`).
+- `pizza_api_app_test_db` bound to port 5433 - a DB for the project's  tests (`src/tests`).
 
 To  create database Migration run when adding a new Model always use `alembic upgrade head` to ensure you didn't have incorrect migration or just checking if you are starting on a clean slate.
 ```shell

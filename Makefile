@@ -32,7 +32,7 @@ serve:
 	cd src && poetry run uvicorn app.main:app --reload --port ${SERVER_PORT}
 
 start:
-	docker-compose up -d pizza-api-app-db  pizza-api-app-db-test 
+	docker-compose up -d pizza-api-app-db  pizza-api-app-test-db 
 
 # Stop docker-compose
 stop:
