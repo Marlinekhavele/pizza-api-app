@@ -1,17 +1,4 @@
-## EKS Microservice template
-If this is your first time here, please read [Our getting started guide](https://senndergmh.atlassian.net/wiki/spaces/PLE/pages/1609302474/Getting+started+with+SennCloud) first.
-
-## Features
-- state of the art EKS deployment
-- fastapi
-- public endpoint (API GW)
-- out of the box gitlab pipeline
-- fully templated
-- optional database support (RDS)
-- extra cheese
-
-
-## Pizza API Service
+# Pizza API Service
  The Pizza API Service  refrence implementatation of a Microservice in EKS using Terraform and Helmm that maintains Marline's Pizza shop and all data storage.
 
  - Customer
@@ -62,10 +49,6 @@ alembic revision --autogenerate -m <your migration message here/>
 ```shell
 poetry run pytest
 ```
-**⚠️⚠️ Please use the develop branch on your first commit, otherwise you may find weird behaviours on the CI pipelines ⚠️⚠️**
-
-**⚠️💻 If you haven't set a Personal Access Token to execute Terraform locally, check first this [link](https://sennder.atlassian.net/wiki/spaces/PLE/pages/2473459723/Using+GitLab+s+Terraform+module+registry#Local-setup)! 💻⚠️**
-
 
 ## API Gateway integration
 
