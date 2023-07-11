@@ -1,6 +1,7 @@
 from typing import Optional
-from pydantic.networks import PostgresDsn
+
 from pydantic import BaseSettings
+from pydantic.networks import PostgresDsn
 
 
 class Settings(BaseSettings):
@@ -26,7 +27,7 @@ class Settings(BaseSettings):
             user=self.DB_USER,
             password=self.DB_PASSWORD,
         )
-    
+
     @property
     def DB_URL_SYNC(self) -> str:
         return PostgresDsn.build(
@@ -37,9 +38,6 @@ class Settings(BaseSettings):
             user=self.DB_USER,
             password=self.DB_PASSWORD,
         )
-
-
-
 
 
 settings = Settings()

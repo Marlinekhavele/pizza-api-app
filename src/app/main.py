@@ -15,7 +15,6 @@ from app.settings import settings
 app = FastAPI(
     title="pizza-api-app",
     middleware=[Middleware(ContextMiddleware)],
-    
 )
 
 app.openapi = OpenApiDocumentation(app).custom_openapi  # type: ignore

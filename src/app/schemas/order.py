@@ -1,6 +1,8 @@
-from pydantic import BaseModel,Field
-from uuid import UUID
 from enum import Enum
+from uuid import UUID
+
+from pydantic import BaseModel, Field
+
 
 class Status(str, Enum):
     DRAFT = "Draft"
@@ -11,13 +13,12 @@ class Status(str, Enum):
 
 class OrderSchema(BaseModel):
     id: UUID
-    customer_id:UUID = Field(alias='customer_id')
-    status:Status
-   
+    customer_id: UUID = Field(alias="customer_id")
+    status: Status
+
 
 class OrderItemSchema(BaseModel):
     id: UUID
-    order_id:UUID= Field(alias='order_id')
-    product_id:UUID= Field(alias='product_id')
+    order_id: UUID = Field(alias="order_id")
+    product_id: UUID = Field(alias="product_id")
     quantity: str
-  
