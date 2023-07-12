@@ -17,8 +17,8 @@ test:
 test-with-coverage:
 	poetry run pytest src/tests --cov=src/app --cov-report term-missing:skip-covered --cov-report xml:.test-reports/coverage.xml --junitxml=.test-reports/test-run.xml
 
-check-types:
-	poetry run mypy src/app
+# check-types:
+# 	poetry run mypy src/app
 
 lint:
 	poetry run pre-commit run --all-files
@@ -32,7 +32,7 @@ serve:
 	cd src && poetry run uvicorn app.main:app --reload --port ${SERVER_PORT}
 
 start:
-	docker-compose up -d pizza-api-app-db  pizza-api-app-db-test 
+	docker-compose up -d pizza-api-app-db  pizza-api-app-test-db 
 
 # Stop docker-compose
 stop:

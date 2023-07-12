@@ -1,4 +1,4 @@
-FROM 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/python:buster-datadog-poetry-3.8
+FROM 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/python:buster-datadog-poetry-3.10
 
 LABEL maintainer="Platform Team <platform@sennder.com>"
 

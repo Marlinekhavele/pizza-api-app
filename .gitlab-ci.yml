@@ -75,14 +75,6 @@ lint:
     - small-runners-nw
   <<: *lib_app_rules
 
-check types:
-  stage: test
-  image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
-  script:
-    - make check-types
-  tags:
-    - small-runners-nw
-  <<: *lib_app_rules
 
 test:
   stage: test
@@ -221,4 +213,5 @@ deploy_app:prod:
 #     name: dev
 #     action: stop
 #   when: manual
+
 

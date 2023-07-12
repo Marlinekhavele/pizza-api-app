@@ -4,6 +4,9 @@ sennder:
   component: pizza-api-app
   project: pizza-api-app
 
+gitlabProjectId: "47466681"
+
+
 staticEnvironment:
   - name: PORT
     value: 8080
