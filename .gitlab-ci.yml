@@ -73,20 +73,14 @@ lint:
     - pre-commit run --all-files
   tags:
     - small-runners-nw
-  except:
-    - main
-  only:
-    changes:
-      - src/app/**/*
-      - src/tests/**/*
-
+  <<: *lib_app_rules
 
 
 test:
   stage: test
   image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
 
-
+  
   services:
     - postgres:13.3-alpine
 
@@ -100,7 +94,7 @@ test:
     - make test-with-coverage
   tags:
     - small-runners-nw
-
+  <<: *lib_app_rules
   artifacts:
     reports:
       junit: .test-reports/test-run.xml
@@ -150,7 +144,7 @@ build linter:
     - helm senndernetes upgrade
   tags:
     - small-runners-nw
-
+  <<: *lib_app_rules
 
 .uninstall_app:
   image:
@@ -219,4 +213,5 @@ deploy_app:prod:
 #     name: dev
 #     action: stop
 #   when: manual
+
 
