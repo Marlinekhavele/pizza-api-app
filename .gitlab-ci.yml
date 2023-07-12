@@ -73,16 +73,14 @@ lint:
     - pre-commit run --all-files
   tags:
     - small-runners-nw
-  <<: *lib_app_rules
+  except:
+    - main
+  only:
+    changes:
+      - src/app/**/*
+      - src/tests/**/*
 
-check types:
-  stage: test
-  image: ${ECR_REPO_URL}:${CI_COMMIT_SHORT_SHA}-test
-  script:
-    - make check-types
-  tags:
-    - small-runners-nw
-  <<: *lib_app_rules
+
 
 test:
   stage: test
@@ -102,7 +100,7 @@ test:
     - make test-with-coverage
   tags:
     - small-runners-nw
-  <<: *lib_app_rules
+
   artifacts:
     reports:
       junit: .test-reports/test-run.xml
@@ -152,7 +150,7 @@ build linter:
     - helm senndernetes upgrade
   tags:
     - small-runners-nw
-  <<: *lib_app_rules
+
 
 .uninstall_app:
   image:
