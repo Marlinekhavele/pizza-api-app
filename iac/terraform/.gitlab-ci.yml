@@ -5,7 +5,7 @@ cache:
     - .terraform
 
 variables:
-  tf_image: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/aws:2.5.0
+  tf_image: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/aws:2.5.1
 
 .lib.terraform:changes:shared: &lib_terraform_changes_shared
   changes:
@@ -118,6 +118,17 @@ tf_shared:
   interruptible: false
   script:
     - terraform apply -input=false ${PLAN}
+
+tf_plan:dev:
+  <<: *plan
+  environment:
+    name: dev
+
+tf_apply:dev:
+  <<: *apply
+  environment:
+    name: dev
+  needs: ["tf_plan:dev"]
 
 tf_plan:playground:
   <<: *plan
