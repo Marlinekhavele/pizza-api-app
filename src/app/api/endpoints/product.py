@@ -9,10 +9,9 @@ from app.models import Product, ProductFlavour, ProductSize
 from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
 
 router = APIRouter()
-
-
-
 # CRUD products
+
+
 @router.post("/products/")
 async def create_product(
     product: ProductSchema, db: AsyncSession = Depends(get_db_session)
@@ -232,6 +231,7 @@ async def delete_products_sizes_id(
         await db.commit()
 
     return product_size
+
 
 
 
