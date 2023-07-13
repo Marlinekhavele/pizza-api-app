@@ -1,7 +1,9 @@
 import uuid
+
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.deps import get_db_session
 from app.models import Product, ProductFlavour, ProductSize
 from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
@@ -34,12 +36,13 @@ async def create_product(
 @router.get("/products")
 async def get_products(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
     """
-    Get products all that are in the database 
+    Get products all that are in the database
     """
     product = await db.execute(select(Product).filter(Product.id == id))
     product_obj = product.scalar_one_or_none()
 
     return product_obj
+
 
 @router.get("/products/{id}")
 async def get_product_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):

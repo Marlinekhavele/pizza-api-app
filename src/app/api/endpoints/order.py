@@ -1,9 +1,10 @@
 import uuid
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from app.deps import get_db_session
 
+from app.deps import get_db_session
 from app.models import Order, OrderItem
 from app.schemas import OrderItemSchema, OrderSchema
 

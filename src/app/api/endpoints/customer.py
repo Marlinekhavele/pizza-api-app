@@ -1,7 +1,9 @@
 import uuid
+
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.deps import get_db_session
 from app.models import Customer
 from app.schemas import CustomerSchema
@@ -65,7 +67,7 @@ async def update_customer_id(
     # retrieves the single result row from the executed query, if any.
     # If there are no results, it returns None.
     # This line assumes that only one customer with the given UUID exists in the database.
-    
+
     customer_obj = db_customer.scalar_one_or_none()
 
     if customer_obj:
