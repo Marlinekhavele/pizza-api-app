@@ -118,6 +118,8 @@ tf_shared:
   interruptible: false
   script:
     - terraform apply -input=false ${PLAN}
+  only:
+    - main
 
 tf_plan:dev:
   <<: *plan
@@ -151,7 +153,6 @@ tf_apply:prod:
   environment:
     name: prod
   needs: ["tf_plan:prod"]
-  only:
-    - main
+
 
 

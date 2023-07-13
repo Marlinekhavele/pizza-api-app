@@ -145,6 +145,8 @@ build linter:
   tags:
     - small-runners-nw
   <<: *lib_app_rules
+  only:
+    - main
 
 .uninstall_app:
   image:
@@ -197,8 +199,7 @@ deploy_app:prod:
   extends: .deploy_app
   environment:
     name: prod
-  only:
-    - main
+
 
 
 
