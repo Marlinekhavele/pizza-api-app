@@ -118,8 +118,7 @@ tf_shared:
   interruptible: false
   script:
     - terraform apply -input=false ${PLAN}
-  only:
-    - main
+    
 
 tf_plan:dev:
   <<: *plan

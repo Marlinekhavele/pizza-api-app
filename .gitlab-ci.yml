@@ -145,8 +145,7 @@ build linter:
   tags:
     - small-runners-nw
   <<: *lib_app_rules
-  only:
-    - main
+
 
 .uninstall_app:
   image:
