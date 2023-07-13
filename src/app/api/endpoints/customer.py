@@ -1,29 +1,12 @@
 import uuid
-from typing import AsyncGenerator
-
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.database.session import SessionLocal
+from sqlalchemy import select
+from app.deps import get_db_session
 from app.models import Customer
 from app.schemas import CustomerSchema
 
 router = APIRouter()
-
-# Responsible for creating and managing database sessions with async
-
-
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with SessionLocal() as session:
-        try:
-            yield session
-        except Exception:
-            await session.rollback()
-            raise
-        else:
-            await session.commit()
-
 
 # CRUD Operation
 
@@ -82,7 +65,7 @@ async def update_customer_id(
     # retrieves the single result row from the executed query, if any.
     # If there are no results, it returns None.
     # This line assumes that only one customer with the given UUID exists in the database.
-
+    
     customer_obj = db_customer.scalar_one_or_none()
 
     if customer_obj:

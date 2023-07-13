@@ -1,28 +1,13 @@
 import uuid
-from typing import AsyncGenerator
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from app.deps import get_db_session
 
-from app.database.session import SessionLocal
 from app.models import Order, OrderItem
 from app.schemas import OrderItemSchema, OrderSchema
 
 router = APIRouter()
-
-# Responsible for creating and managing database sessions with async
-
-
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with SessionLocal() as session:
-        try:
-            yield session
-        except Exception:
-            await session.rollback()
-            raise
-        else:
-            await session.commit()
 
 
 # CRUD orders
