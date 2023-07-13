@@ -118,6 +118,7 @@ tf_shared:
   interruptible: false
   script:
     - terraform apply -input=false ${PLAN}
+    
 
 tf_plan:dev:
   <<: *plan
@@ -140,5 +141,17 @@ tf_apply:playground:
   environment:
     name: playground
   needs: ["tf_plan:playground"]
+
+tf_plan:prod:
+  <<: *plan
+  environment:
+    name: prod
+
+tf_apply:prod:
+  <<: *apply
+  environment:
+    name: prod
+  needs: ["tf_plan:prod"]
+
 
 
