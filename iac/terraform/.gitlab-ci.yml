@@ -141,4 +141,17 @@ tf_apply:playground:
     name: playground
   needs: ["tf_plan:playground"]
 
+tf_plan:prod:
+  <<: *plan
+  environment:
+    name: prod
+
+tf_apply:prod:
+  <<: *apply
+  environment:
+    name: prod
+  needs: ["tf_plan:prod"]
+  only:
+    - main
+
 

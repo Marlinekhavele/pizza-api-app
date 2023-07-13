@@ -197,6 +197,8 @@ deploy_app:prod:
   extends: .deploy_app
   environment:
     name: prod
+  only:
+    - main
 
 
 
