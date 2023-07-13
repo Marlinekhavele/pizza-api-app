@@ -141,7 +141,7 @@ build linter:
     pull_policy: always
   stage: deploy_app
   script:
-    - helm senndernetes upgrade
+    - helm senndernetes upgrade --create-namespace
   tags:
     - small-runners-nw
   <<: *lib_app_rules
