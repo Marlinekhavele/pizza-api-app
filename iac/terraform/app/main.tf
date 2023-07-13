@@ -10,5 +10,5 @@ locals {
   ba        = "carriers-and-drivers"
   namespace = "sennder"
   project   = "pizza-api-app"
-  components_list = ["pizza-api-app"]
+  
 }
