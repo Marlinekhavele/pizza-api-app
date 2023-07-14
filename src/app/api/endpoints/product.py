@@ -26,7 +26,7 @@ async def create_product(
         description=product.description,
         price=product.price,
     )
-    print(new_product.price)
+    # print(new_product.price)
     db.add(new_product)
     await db.commit()
     await db.refresh(new_product)
@@ -39,7 +39,7 @@ async def get_products(db: AsyncSession = Depends(get_db_session)):
     Get products all that are in the database
     """
     results = await db.execute(select(Product))
-    print(results)
+    # print(results)
     # This method retrieves all the objects from the query result set and returns them as a list.
     products = results.scalars().all()
     return products
@@ -110,14 +110,14 @@ async def create_products_flavours(
     await db.refresh(new_product_flavour)
     return new_product_flavour
 
-
+#debug
 @router.get("/products/flavours")
 async def get_products_flavours(db: AsyncSession = Depends(get_db_session)):
     """
     Get all product flavours that are in the database
     """
     results = await db.execute(select(ProductFlavour))
-    print(results)
+    # print(results)
     # This method retrieves all the objects from the query result set and returns them as a list.
     product_flavours = results.scalars().all()
     return product_flavours
@@ -196,7 +196,7 @@ async def create_products_sizes(
     await db.refresh(new_product_size)
     return new_product_size
 
-
+#debug
 @router.get("/products/sizes")
 async def get_products_size(db: AsyncSession = Depends(get_db_session)):
     """

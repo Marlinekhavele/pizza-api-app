@@ -7,14 +7,7 @@ from sqlalchemy.orm import relationship
 from ..database.base import Base
 from .customer import Customer
 from .product import Product
-
-
-class Status(str, Enum):
-    DRAFT = "Draft"
-    PROCESSING = "Processing"
-    CANCELLED = "Cancelled"
-    DELIVERED = "Delivered"
-
+from app.schemas.enums import Status
 
 class Order(Base):
     __tablename__ = "orders"

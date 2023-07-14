@@ -12,7 +12,8 @@ router = APIRouter()
 
 # CRUD Operation
 
-
+# repositories
+# unit tests
 @router.post("/customers/")
 async def create_customer(
     customer: CustomerSchema, db: AsyncSession = Depends(get_db_session)

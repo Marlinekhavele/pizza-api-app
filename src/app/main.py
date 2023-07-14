@@ -11,11 +11,20 @@ from app.api.api import api_router
 from app.api.openapi import OpenApiDocumentation
 from app.context import ContextMiddleware
 from app.settings import settings
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="pizza-api-app",
     middleware=[Middleware(ContextMiddleware)],
+
 )
+app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 app.openapi = OpenApiDocumentation(app).custom_openapi  # type: ignore
 

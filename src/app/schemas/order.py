@@ -1,14 +1,6 @@
-from enum import Enum
 from uuid import UUID
-
+from app.schemas.enums import Status
 from pydantic import BaseModel, Field
-
-
-class Status(str, Enum):
-    DRAFT = "Draft"
-    PROCESSING = "Processing"
-    CANCELLED = "Cancelled"
-    DELIVERED = "Delivered"
 
 
 class OrderSchema(BaseModel):
