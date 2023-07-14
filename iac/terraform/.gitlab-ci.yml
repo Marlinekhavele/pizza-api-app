@@ -64,6 +64,7 @@ tf_shared:
     - tfswitch
     - cat ~/.aws/config
     - source ../../scripts/terraform-init.sh
+    - "echo Current CI environemnt: ${CI_ENVIRONMENT_NAME}"
   script:
     - terraform validate
     - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
@@ -94,6 +95,7 @@ tf_shared:
     - tfswitch
     - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
     - source ../../scripts/terraform-init.sh || true
+    - "echo Current CI environemnt: ${CI_ENVIRONMENT_NAME}"
   tags:
     - small-runners-nw
   <<: *lib_terraform_rules_app
@@ -118,7 +120,6 @@ tf_shared:
   interruptible: false
   script:
     - terraform apply -input=false ${PLAN}
-    
 
 tf_plan:dev:
   <<: *plan
