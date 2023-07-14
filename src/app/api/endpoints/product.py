@@ -45,7 +45,6 @@ async def get_products(db: AsyncSession = Depends(get_db_session)):
     return products
 
 
-
 @router.get("/products/{id}")
 async def get_product_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
     """
@@ -110,6 +109,18 @@ async def create_products_flavours(
     await db.commit()
     await db.refresh(new_product_flavour)
     return new_product_flavour
+
+
+@router.get("/products/flavours")
+async def get_products_flavours(db: AsyncSession = Depends(get_db_session)):
+    """
+    Get all product flavours that are in the database
+    """
+    results = await db.execute(select(ProductFlavour))
+    print(results)
+    # This method retrieves all the objects from the query result set and returns them as a list.
+    product_flavours = results.scalars().all()
+    return product_flavours
 
 
 @router.get("/products/{id}/flavours")
@@ -186,6 +197,18 @@ async def create_products_sizes(
     return new_product_size
 
 
+@router.get("/products/sizes")
+async def get_products_size(db: AsyncSession = Depends(get_db_session)):
+    """
+    Get  all product sizes that are in the database
+    """
+    results = await db.execute(select(ProductSize))
+    print(results)
+    # This method retrieves all the objects from the query result set and returns them as a list.
+    product_sizes = results.scalars().all()
+    return product_sizes
+
+
 @router.get("/products/{id}/sizes")
 async def get_products_sizes_id(
     id: uuid.UUID, db: AsyncSession = Depends(get_db_session)
@@ -232,9 +255,4 @@ async def delete_products_sizes_id(
     if product_size_obj:
         db.delete(product_size_obj)
         await db.commit()
-
     return product_size
-
-
-
-
