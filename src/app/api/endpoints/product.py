@@ -9,6 +9,7 @@ from app.models import Product, ProductFlavour, ProductSize
 from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
 
 router = APIRouter()
+
 # CRUD products
 
 
@@ -25,7 +26,7 @@ async def create_product(
         description=product.description,
         price=product.price,
     )
-    # print(new_product.price)
+    print(new_product.price)
     db.add(new_product)
     await db.commit()
     await db.refresh(new_product)
@@ -33,14 +34,16 @@ async def create_product(
 
 
 @router.get("/products")
-async def get_products(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
+async def get_products(db: AsyncSession = Depends(get_db_session)):
     """
     Get products all that are in the database
     """
-    product = await db.execute(select(Product).filter(Product.id == id))
-    product_obj = product.scalar_one_or_none()
+    results = await db.execute(select(Product))
+    print(results)
+    # This method retrieves all the objects from the query result set and returns them as a list.
+    products = results.scalars().all()
+    return products
 
-    return product_obj
 
 
 @router.get("/products/{id}")
