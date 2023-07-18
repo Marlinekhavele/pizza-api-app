@@ -6,16 +6,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps import get_db_session
 from app.models import Order, OrderItem
-from app.schemas import OrderItemSchema, OrderSchema
 from app.repositories.order_repositories import OrderRepository
+from app.schemas import OrderItemSchema, OrderSchema
+
 router = APIRouter()
 
 
 # CRUD orders
 @router.post("/orders/")
 async def create_order(
-order: OrderSchema,    
-order_repo: OrderRepository = Depends(OrderRepository),
+    order: OrderSchema,
+    order_repo: OrderRepository = Depends(OrderRepository),
 ):
     """
     Create a order and store it in the database

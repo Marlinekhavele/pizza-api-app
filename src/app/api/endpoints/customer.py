@@ -1,17 +1,19 @@
 import uuid
 
 from fastapi import APIRouter, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps import get_db_session
 from app.models import Customer
-from app.schemas import CustomerSchema
 from app.repositories.customer_repositories import CustomerRepository
+from app.schemas import CustomerSchema
 
 router = APIRouter()
 
 # CRUD Operation
+
+
 @router.post("/customers/")
 async def create_customer(
     customer: CustomerSchema,
@@ -22,6 +24,7 @@ async def create_customer(
     """
     new_customer = await customer_repo.create_customer(customer)
     return new_customer
+
 
 @router.get("/customers/")
 async def get_customers(repo: CustomerRepository = Depends(CustomerRepository)):
@@ -38,7 +41,7 @@ async def get_customer_id(repo: CustomerRepository = Depends(CustomerRepository)
     """
     return await repo.get_customer_by_id(id)
 
-   
+
 @router.put("/customers/{id}")
 async def update_customer_id(
     id: uuid.UUID, customer: CustomerSchema, db: AsyncSession = Depends(get_db_session)

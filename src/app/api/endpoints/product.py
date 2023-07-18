@@ -6,11 +6,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps import get_db_session
 from app.models import Product, ProductFlavour, ProductSize
-from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
 from app.repositories.product_repositories import ProductRepository
+from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
+
 router = APIRouter()
 
 # CRUD products
+
+
 @router.post("/products/")
 async def create_product(
     product: ProductSchema,

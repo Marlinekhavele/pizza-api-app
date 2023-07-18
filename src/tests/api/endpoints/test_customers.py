@@ -1,8 +1,7 @@
-import pytest
-from httpx import AsyncClient
-
 from uuid import uuid4
 
+import pytest
+from httpx import AsyncClient
 
 from conftest import TEST_BASE_URL
 
@@ -19,7 +18,3 @@ async def test_create_customer(client: AsyncClient):
     response = await client.post(f"{TEST_BASE_URL}/api/customers/", json=customer_data)
     assert response.status_code == 200
     assert response.json() == customer_data
-
-
-
- 
