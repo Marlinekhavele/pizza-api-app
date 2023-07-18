@@ -7,29 +7,19 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.deps import get_db_session
 from app.models import Product, ProductFlavour, ProductSize
 from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
-
+from app.repositories.product_repositories import ProductRepository
 router = APIRouter()
 
 # CRUD products
-
-
 @router.post("/products/")
 async def create_product(
-    product: ProductSchema, db: AsyncSession = Depends(get_db_session)
+    product: ProductSchema,
+    product_repo: ProductRepository = Depends(ProductRepository),
 ):
     """
-    Create a product and store it in the database
+    Create a Product and store it in the database
     """
-    new_product = Product(
-        id=product.id,
-        title=product.title,
-        description=product.description,
-        price=product.price,
-    )
-    # print(new_product.price)
-    db.add(new_product)
-    await db.commit()
-    await db.refresh(new_product)
+    new_product = await product_repo.create_product(product)
     return new_product
 
 
@@ -111,7 +101,6 @@ async def create_products_flavours(
     return new_product_flavour
 
 
-# debug
 @router.get("/products/flavours")
 async def get_products_flavours(db: AsyncSession = Depends(get_db_session)):
     """

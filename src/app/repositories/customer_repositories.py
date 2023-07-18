@@ -1,0 +1,46 @@
+# will handle all my customer logic 
+import uuid
+from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import  Depends
+from sqlalchemy import select
+from sqlalchemy.exc import NoResultFound
+from app.models import Customer
+from app.deps import get_db_session
+
+
+
+class CustomerRepository:
+    def __init__(self, db: AsyncSession = Depends(get_db_session)):
+        self.db = db
+
+    async def create_customer(self, customer_data):
+        new_customer = Customer(
+            id=customer_data.id,
+            name=customer_data.name,
+            phone=customer_data.phone,
+            email=customer_data.email,
+        )
+        self.db.add(new_customer)
+        await self.db.commit()
+        await self.db.refresh(new_customer)
+        return new_customer
+    
+    
+    async def get_customers(self):
+        results = await self.db.execute(select(Customer))
+        customers = results.scalars().all()
+        return customers
+    
+    
+    async def get_customer_by_id(self, customer_id: uuid.UUID):
+        try:
+            query = select(Customer).filter(Customer.id == customer_id)
+            result = await self.db.execute(query)
+            customer_obj = result.scalar_one()
+            return customer_obj
+        except NoResultFound:
+            return None
+        
+
+    #update
+    #delete

@@ -1,61 +1,44 @@
 import uuid
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from app.deps import get_db_session
 from app.models import Customer
 from app.schemas import CustomerSchema
+from app.repositories.customer_repositories import CustomerRepository
 
 router = APIRouter()
 
 # CRUD Operation
-
-
 @router.post("/customers/")
 async def create_customer(
-    customer: CustomerSchema, db: AsyncSession = Depends(get_db_session)
+    customer: CustomerSchema,
+    customer_repo: CustomerRepository = Depends(CustomerRepository),
 ):
     """
     Create a Customer and store it in the database
     """
-    new_customer = Customer(
-        id=customer.id, name=customer.name, phone=customer.phone, email=customer.email
-    )
-    # print(new_customer.email)
-    db.add(new_customer)
-    await db.commit()
-    await db.refresh(new_customer)
+    new_customer = await customer_repo.create_customer(customer)
     return new_customer
 
-
 @router.get("/customers/")
-async def get_customers(db: AsyncSession = Depends(get_db_session)):
+async def get_customers(repo: CustomerRepository = Depends(CustomerRepository)):
     """
     Get customers that are in the database
     """
-    results = await db.execute(select(Customer))
-    # This method retrieves all the objects from the query result set and returns them as a list.
-    customers = results.scalars().all()
-    return customers
+    return await repo.get_customers()
 
 
 @router.get("/customers/{id}")
-async def get_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
+async def get_customer_id(repo: CustomerRepository = Depends(CustomerRepository)):
     """
     Get customers that are in the database by id
     """
-    customer = await db.execute(select(Customer).filter(Customer.id == id))
-    # retrieves the single result row from the executed query, if any.
-    # If there are no results, it returns None.
-    # This line assumes that only one customer with the given UUID exists in the database.
+    return await repo.get_customer_by_id(id)
 
-    customer_obj = customer.scalar_one_or_none()
-
-    return customer_obj
-
-
+   
 @router.put("/customers/{id}")
 async def update_customer_id(
     id: uuid.UUID, customer: CustomerSchema, db: AsyncSession = Depends(get_db_session)
