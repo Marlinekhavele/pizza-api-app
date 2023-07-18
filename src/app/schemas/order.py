@@ -1,6 +1,8 @@
 from uuid import UUID
-from app.schemas.enums import Status
+
 from pydantic import BaseModel, Field
+
+from app.schemas.enums import Status
 
 
 class OrderSchema(BaseModel):

@@ -1,16 +1,21 @@
-from fastapi.testclient import TestClient
+import pytest
+from httpx import AsyncClient
+
+from conftest import TEST_BASE_URL
 
 
 # The health check must respond with a 200.
 # This allows ECS to register a successful deployment.
 # See iac/terraform/app/variables.tf if you wish to change this endpoint
-def test_health_check(client: TestClient):
-    response = client.get("/api/health", allow_redirects=False)
+@pytest.mark.asyncio
+async def test_health_check(client: AsyncClient):
+    response = await client.get(f"{TEST_BASE_URL}/api/health")
     assert 200 == response.status_code
     assert {"status": "I'm alive"} == response.json()
 
 
-def test_health_check_trailingslash(client: TestClient):
-    response = client.get("api/health/", allow_redirects=False)
+@pytest.mark.asyncio
+async def test_health_check_trailingslash(client: AsyncClient):
+    response = await client.get(f"{TEST_BASE_URL}/api/health/")
     assert 200 == response.status_code
     assert {"status": "I'm alive"} == response.json()

@@ -110,7 +110,8 @@ async def create_products_flavours(
     await db.refresh(new_product_flavour)
     return new_product_flavour
 
-#debug
+
+# debug
 @router.get("/products/flavours")
 async def get_products_flavours(db: AsyncSession = Depends(get_db_session)):
     """
@@ -196,7 +197,8 @@ async def create_products_sizes(
     await db.refresh(new_product_size)
     return new_product_size
 
-#debug
+
+# debug
 @router.get("/products/sizes")
 async def get_products_size(db: AsyncSession = Depends(get_db_session)):
     """
