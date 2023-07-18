@@ -4,6 +4,7 @@ from ddtrace import tracer
 from ddtrace.contrib.asgi import TraceMiddleware
 from ddtrace.contrib.asyncio import context_provider
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from sentry_sdk.integrations.asgi import SentryAsgiMiddleware
 from starlette.middleware import Middleware
 
@@ -15,6 +16,13 @@ from app.settings import settings
 app = FastAPI(
     title="pizza-api-app",
     middleware=[Middleware(ContextMiddleware)],
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 app.openapi = OpenApiDocumentation(app).custom_openapi  # type: ignore

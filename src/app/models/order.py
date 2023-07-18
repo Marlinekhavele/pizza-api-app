@@ -1,19 +1,12 @@
-from enum import Enum
-
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 
+from app.schemas.enums import Status
+
 from ..database.base import Base
 from .customer import Customer
 from .product import Product
-
-
-class Status(str, Enum):
-    DRAFT = "Draft"
-    PROCESSING = "Processing"
-    CANCELLED = "Cancelled"
-    DELIVERED = "Delivered"
 
 
 class Order(Base):

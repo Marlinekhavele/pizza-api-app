@@ -1,41 +1,27 @@
 import uuid
-from typing import AsyncGenerator
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.session import SessionLocal
+from app.deps import get_db_session
 from app.models import Order, OrderItem
+from app.repositories.order_repositories import OrderRepository
 from app.schemas import OrderItemSchema, OrderSchema
 
 router = APIRouter()
 
-# Responsible for creating and managing database sessions with async
-
-
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with SessionLocal() as session:
-        try:
-            yield session
-        except Exception:
-            await session.rollback()
-            raise
-        else:
-            await session.commit()
-
 
 # CRUD orders
 @router.post("/orders/")
-async def create_order(order: OrderSchema, db: AsyncSession = Depends(get_db_session)):
+async def create_order(
+    order: OrderSchema,
+    order_repo: OrderRepository = Depends(OrderRepository),
+):
     """
-    Create a orders and store it in the database
+    Create a order and store it in the database
     """
-    new_order = Order(id=order.id, customer_id=order.customer_id, status=order.status)
-    # print(new_order.status)
-    db.add(new_order)
-    await db.commit()
-    await db.refresh(new_order)
+    new_order = await order_repo.create_order(order)
     return new_order
 
 

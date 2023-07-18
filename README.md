@@ -31,7 +31,7 @@ DB_NAME=pizza_api_app_db
 DB_PASSWORD=password
 ```
 
-To spin up the service locally you can run `make serve ` this will start the service.[Docker compose](https://gitlab.com/sennder/carriers-drivers/driver-app/pizza-api-app/-/blob/main/docker-compose.yml)
+To spin up the service locally you can run `make serve ` this will start the service locally and you should be able to see API documentaion on the swagger ui.[Docker compose](https://gitlab.com/sennder/carriers-drivers/driver-app/pizza-api-app/-/blob/main/docker-compose.yml)
 
 service configuration has two DB services:
 - `make start` will start the docker database containers locally

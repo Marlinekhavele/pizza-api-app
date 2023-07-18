@@ -1,49 +1,41 @@
 import uuid
-from typing import AsyncGenerator
 
 from fastapi import APIRouter, Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.database.session import SessionLocal
+from app.deps import get_db_session
 from app.models import Product, ProductFlavour, ProductSize
+from app.repositories.product_repositories import ProductRepository
 from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
 
 router = APIRouter()
 
-# Responsible for creating and managing database sessions with async
-
-
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    async with SessionLocal() as session:
-        try:
-            yield session
-        except Exception:
-            await session.rollback()
-            raise
-        else:
-            await session.commit()
-
-
 # CRUD products
+
+
 @router.post("/products/")
 async def create_product(
-    product: ProductSchema, db: AsyncSession = Depends(get_db_session)
+    product: ProductSchema,
+    product_repo: ProductRepository = Depends(ProductRepository),
 ):
     """
-    Create a product and store it in the database
+    Create a Product and store it in the database
     """
-    new_product = Product(
-        id=product.id,
-        title=product.title,
-        description=product.description,
-        price=product.price,
-    )
-    # print(new_product.price)
-    db.add(new_product)
-    await db.commit()
-    await db.refresh(new_product)
+    new_product = await product_repo.create_product(product)
     return new_product
+
+
+@router.get("/products")
+async def get_products(db: AsyncSession = Depends(get_db_session)):
+    """
+    Get products all that are in the database
+    """
+    results = await db.execute(select(Product))
+    # print(results)
+    # This method retrieves all the objects from the query result set and returns them as a list.
+    products = results.scalars().all()
+    return products
 
 
 @router.get("/products/{id}")
@@ -110,6 +102,19 @@ async def create_products_flavours(
     await db.commit()
     await db.refresh(new_product_flavour)
     return new_product_flavour
+
+
+# debug
+@router.get("/products/flavours")
+async def get_products_flavours(db: AsyncSession = Depends(get_db_session)):
+    """
+    Get all product flavours that are in the database
+    """
+    results = await db.execute(select(ProductFlavour))
+    # print(results)
+    # This method retrieves all the objects from the query result set and returns them as a list.
+    product_flavours = results.scalars().all()
+    return product_flavours
 
 
 @router.get("/products/{id}/flavours")
@@ -186,6 +191,19 @@ async def create_products_sizes(
     return new_product_size
 
 
+# debug
+@router.get("/products/sizes")
+async def get_products_size(db: AsyncSession = Depends(get_db_session)):
+    """
+    Get  all product sizes that are in the database
+    """
+    results = await db.execute(select(ProductSize))
+    print(results)
+    # This method retrieves all the objects from the query result set and returns them as a list.
+    product_sizes = results.scalars().all()
+    return product_sizes
+
+
 @router.get("/products/{id}/sizes")
 async def get_products_sizes_id(
     id: uuid.UUID, db: AsyncSession = Depends(get_db_session)
@@ -232,5 +250,4 @@ async def delete_products_sizes_id(
     if product_size_obj:
         db.delete(product_size_obj)
         await db.commit()
-
     return product_size
