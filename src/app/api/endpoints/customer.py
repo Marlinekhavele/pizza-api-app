@@ -1,11 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.deps import get_db_session
-from app.models import Customer
 from app.repositories.customer_repositories import CustomerRepository
 from app.schemas import CustomerSchema
 
@@ -44,40 +40,25 @@ async def get_customer_id(repo: CustomerRepository = Depends(CustomerRepository)
 
 @router.put("/customers/{id}")
 async def update_customer_id(
-    id: uuid.UUID, customer: CustomerSchema, db: AsyncSession = Depends(get_db_session)
+    id: uuid.UUID,
+    customer: CustomerSchema,
+    repo: CustomerRepository = Depends(CustomerRepository),
 ):
     """
     Update customer details using their ID that is in the database
     """
-    db_customer = await db.execute(select(Customer).filter(Customer.id == id))
-    # retrieves the single result row from the executed query, if any.
-    # If there are no results, it returns None.
-    # This line assumes that only one customer with the given UUID exists in the database.
-
-    customer_obj = db_customer.scalar_one_or_none()
-
-    if customer_obj:
-        customer_obj.name = customer.name
-        customer_obj.email = customer.email
-        customer_obj.phone = customer.phone
-
-        await db.commit()
-
-    return customer_obj
+    updated_customer = await repo.update_customer(
+        id, customer.name, customer.email, customer.phone
+    )
+    return updated_customer
 
 
 @router.delete("/customers/{id}")
-async def delete_customer_id(id: uuid.UUID, db: AsyncSession = Depends(get_db_session)):
+async def delete_customer_id(
+    id: uuid.UUID, repo: CustomerRepository = Depends(CustomerRepository)
+):
     """
     Delete customer details using their UUID that is stored in the database
     """
-    customer = await db.execute(select(Customer).filter(Customer.id == id))
-    # retrieves the single result row from the executed query if any. I
-    # f there are no results, it returns None.
-    customer_obj = customer.scalar_one_or_none()
-
-    if customer_obj:
-        db.delete(customer_obj)
-        await db.commit()
-
-    return customer_obj
+    deleted_customer = await repo.delete_customer(id)
+    return deleted_customer

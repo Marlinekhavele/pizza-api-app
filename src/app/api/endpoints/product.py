@@ -104,6 +104,7 @@ async def create_products_flavours(
     return new_product_flavour
 
 
+# debug
 @router.get("/products/flavours")
 async def get_products_flavours(db: AsyncSession = Depends(get_db_session)):
     """

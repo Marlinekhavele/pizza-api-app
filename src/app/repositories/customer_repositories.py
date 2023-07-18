@@ -40,5 +40,20 @@ class CustomerRepository:
         except NoResultFound:
             return None
 
-    # update
-    # delete
+    async def update_customer(
+        self, customer_id: uuid.UUID, name: str, email: str, phone: str
+    ):
+        customer_obj = await self.get_customer_by_id(customer_id)
+        if customer_obj:
+            customer_obj.name = name
+            customer_obj.email = email
+            customer_obj.phone = phone
+            await self.db.commit()
+        return customer_obj
+
+    async def delete_customer(self, customer_id: uuid.UUID):
+        customer_obj = await self.get_customer_by_id(customer_id)
+        if customer_obj:
+            self.db.delete(customer_obj)
+            await self.db.commit()
+        return customer_obj
