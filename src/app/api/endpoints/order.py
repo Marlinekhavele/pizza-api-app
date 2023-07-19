@@ -2,7 +2,8 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.repositories.order_repositories import OrderRepository, OrderItemRepository
+from app.repositories.order_repositories import OrderRepository
+from app.repositories.order_item_repositories import OrderItemRepository
 from app.schemas import OrderItemSchema, OrderSchema
 
 router = APIRouter()
@@ -47,7 +48,7 @@ async def update_orders_id(
     """
     Update order details using their ID that is in the database
     """
-    updated_order = await order_repo.update_order(
+    updated_order = await order_repo.update_order_id(
         id,
         order.status
     )
@@ -75,7 +76,7 @@ async def create_order_items(
     """
     create orders items
     """
-    new_order_item = await repository.create(order_items)
+    new_order_item = await repository.create_order_items(order_items)
     return new_order_item
 
 @router.get("/orders/items")
@@ -107,7 +108,7 @@ async def update_order_items_id(
     """
     Update order items for a specific order using an ID
     """
-    db_order_item = await order_item_repository.get_by_id(id)
+    db_order_item = await order_item_repository.get_order_items_by_id(id)
     if not db_order_item:
         raise HTTPException(status_code=404, detail="Order item not found")
 
@@ -119,13 +120,12 @@ async def update_order_items_id(
 @router.delete("/orders/{id}/items")
 async def delete_order_items_id(
     id: uuid.UUID,
-    order_repository: OrderRepository = Depends(OrderRepository),
     order_item_repository: OrderItemRepository = Depends(OrderItemRepository),
 ):
     """
     Delete items for a specific order using an ID
     """
-    order = await order_repository.get_by_id(id)
+    order = await order_item_repository.get_order_items_by_id(id)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
 

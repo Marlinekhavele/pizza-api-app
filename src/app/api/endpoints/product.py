@@ -6,6 +6,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps import get_db_session
 from app.repositories.product_repositories import ProductRepository
+from app.repositories.product_flavour_repositories import ProductFlavourRepository
+from app.repositories.product_size_repositories import ProductSizeRepository
 from app.schemas import ProductFlavourSchema, ProductSchema, ProductSizeSchema
 
 router = APIRouter()
@@ -71,7 +73,7 @@ async def delete_product_id(
 @router.post("/products/flavours/")
 async def create_product_flavours(
     product_flavour: ProductFlavourSchema,
-    product_flavour_repo: ProductRepository = Depends(ProductRepository),
+    product_flavour_repo: ProductFlavourRepository = Depends(ProductFlavourRepository),
 ):
     """
     Create a Product Flavour and store it in the database
@@ -80,7 +82,7 @@ async def create_product_flavours(
     return new_product_flavour
 
 @router.get("/products/flavours/")
-async def get_products_flavours(product_flavour_repo: ProductRepository = Depends(ProductRepository)):
+async def get_products_flavours(product_flavour_repo: ProductFlavourRepository = Depends(ProductFlavourRepository)):
     """
     Get all product flavours that are in the database
     """
@@ -89,7 +91,7 @@ async def get_products_flavours(product_flavour_repo: ProductRepository = Depend
 
 @router.get("/products/{id}/flavours")
 async def get_products_flavours_id(
-    id: uuid.UUID, product_flavour_repo: ProductRepository = Depends(ProductRepository)
+    id: uuid.UUID, product_flavour_repo: ProductFlavourRepository = Depends(ProductFlavourRepository)
 ):
     """
     Get products flavours  by id here
@@ -102,7 +104,7 @@ async def get_products_flavours_id(
 async def update_products_flavours_id(
     id: uuid.UUID,
     product_flavour: ProductFlavourSchema,
-    repo: ProductRepository = Depends(ProductRepository),
+    repo: ProductFlavourRepository = Depends(ProductFlavourRepository),
 ):
     """
     Update products flavours details using ID's that are stored  database, here
@@ -118,7 +120,7 @@ async def update_products_flavours_id(
 
 @router.delete("/products/{id}/flavours")
 async def delete_products_flavours_id(
-    id: uuid.UUID, repo: ProductRepository = Depends(ProductRepository)
+    id: uuid.UUID, repo: ProductFlavourRepository = Depends(ProductFlavourRepository)
 ):
     """
     Delete product flavour using their UUID that is stored in the database
@@ -130,7 +132,7 @@ async def delete_products_flavours_id(
 # CRUD productsize
 @router.post("/products/sizes")
 async def create_products_sizes(
-    product_size: ProductSizeSchema, product_size_repo: ProductRepository = Depends(ProductRepository),
+    product_size: ProductSizeSchema, product_size_repo: ProductSizeRepository = Depends(ProductSizeRepository),
 ):
     """
     Create a products sizes and store it in the database
@@ -140,7 +142,7 @@ async def create_products_sizes(
 
 
 @router.get("/products/sizes")
-async def get_products_size(product_size_repo: ProductRepository = Depends(ProductRepository)):
+async def get_products_size(product_size_repo: ProductSizeRepository = Depends(ProductSizeRepository)):
     """
     Get  all product sizes that are in the database
     """
@@ -150,7 +152,7 @@ async def get_products_size(product_size_repo: ProductRepository = Depends(Produ
 
 @router.get("/products/{id}/sizes")
 async def get_products_sizes_id(
-    id: uuid.UUID, product_size_repo: ProductRepository = Depends(ProductRepository)
+    id: uuid.UUID, product_size_repo: ProductSizeRepository = Depends(ProductSizeRepository)
 ):
     """
     Get products sizes  by id here
@@ -164,7 +166,7 @@ async def get_products_sizes_id(
 async def update_products_sizes_id(
     id: uuid.UUID,
     product_size: ProductSizeSchema,
-        repo: ProductRepository = Depends(ProductRepository),
+        repo: ProductSizeRepository = Depends(ProductSizeRepository),
 ):
     """
     Update products sizes details using ID's that are stored  database, here
@@ -181,7 +183,7 @@ async def update_products_sizes_id(
 
 @router.delete("/products/{id}/sizes")
 async def delete_products_sizes_id(
-    id: uuid.UUID,repo: ProductRepository = Depends(ProductRepository)
+    id: uuid.UUID,repo: ProductSizeRepository = Depends(ProductSizeRepository)
 ):
     """
     Delete product sizes
