@@ -139,7 +139,7 @@ async def create_products_sizes(
     """
     Create a products sizes and store it in the database
     """
-    new_product_size = await product_size_repo.create_product_flavours(product_size)
+    new_product_size = await product_size_repo.create_product_sizes(product_size)
     return new_product_size
 
 
@@ -175,7 +175,7 @@ async def update_products_sizes_id(
     - we can update a field like:
     - title
     """
-    updated_product_size = await repo.update_product_size(id, product_size.title)
+    updated_product_size = await repo.update_product_size_by_id(id, product_size.title)
     return updated_product_size
 
 

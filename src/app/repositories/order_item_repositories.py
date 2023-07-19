@@ -13,7 +13,6 @@ class OrderItemRepository:
     def __init__(self, db: AsyncSession = Depends(get_db_session)):
         self.db = db
 
-    # order items
     async def create_order_items(self, order_item_data):
         new_order_item = OrderItem(
             id=order_item_data.id,

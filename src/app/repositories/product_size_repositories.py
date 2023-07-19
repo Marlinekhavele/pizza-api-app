@@ -40,7 +40,7 @@ class ProductSizeRepository:
         except NoResultFound:
             return None
 
-    async def update_product_size(
+    async def update_product_size_by_id(
         self,
         product_size_id: uuid.UUID,
         title: str,
@@ -52,7 +52,7 @@ class ProductSizeRepository:
         return product_size_obj
 
     async def delete_product_size(self, product_size_id: uuid.UUID):
-        product_size = await self.get_product_by_id(product_size_id)
+        product_size = await self.get_product_size_by_id(product_size_id)
         if product_size:
             self.db.delete(product_size)
             await self.db.commit()

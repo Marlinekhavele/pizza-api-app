@@ -51,7 +51,7 @@ class ProductFlavourRepository:
         return product_flavour_obj
 
     async def delete_product_flavour(self, product_flavour_id: uuid.UUID):
-        product_flavour = await self.get_product_by_id(product_flavour_id)
+        product_flavour = await self.get_product_flavour_by_id(product_flavour_id)
         if product_flavour:
             self.db.delete(product_flavour)
             await self.db.commit()
