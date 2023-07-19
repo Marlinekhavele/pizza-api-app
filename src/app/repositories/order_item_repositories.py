@@ -1,10 +1,13 @@
+import uuid
+
 from fastapi import Depends
+from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-import uuid
+
 from app.deps import get_db_session
-from app.models import  OrderItem
+from app.models import OrderItem
+
 
 class OrderItemRepository:
     def __init__(self, db: AsyncSession = Depends(get_db_session)):
@@ -22,7 +25,7 @@ class OrderItemRepository:
         await self.db.commit()
         await self.db.refresh(new_order_item)
         return new_order_item
-    
+
     async def get_orders_items(self):
         results = await self.db.execute(select(OrderItem))
         orders_items = results.scalars().all()
@@ -38,12 +41,14 @@ class OrderItemRepository:
             return None
 
     async def update_order_items_id(
-        self, order_item_id: uuid.UUID, quantity: str,
+        self,
+        order_item_id: uuid.UUID,
+        quantity: str,
     ):
         order_item_obj = await self.get_order_items_by_id(order_item_id)
         if order_item_obj:
             order_item_obj.quantity = quantity
-        
+
             await self.db.commit()
         return order_item_obj
 

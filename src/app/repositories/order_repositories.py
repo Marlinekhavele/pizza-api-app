@@ -1,9 +1,11 @@
 # will handle all my order logic
+import uuid
+
 from fastapi import Depends
+from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
-import uuid
+
 from app.deps import get_db_session
 from app.models import Order, OrderItem
 
@@ -22,7 +24,7 @@ class OrderRepository:
         await self.db.commit()
         await self.db.refresh(new_order)
         return new_order
-    
+
     async def get_orders(self):
         results = await self.db.execute(select(Order))
         orders = results.scalars().all()
@@ -38,12 +40,14 @@ class OrderRepository:
             return None
 
     async def update_order_id(
-        self, order_id: uuid.UUID, status: str,
+        self,
+        order_id: uuid.UUID,
+        status: str,
     ):
         order_obj = await self.get_order_by_id(order_id)
         if order_obj:
             order_obj.status = status
-        
+
             await self.db.commit()
         return order_obj
 
@@ -53,4 +57,3 @@ class OrderRepository:
             self.db.delete(order_obj)
             await self.db.commit()
         return order_obj
-    

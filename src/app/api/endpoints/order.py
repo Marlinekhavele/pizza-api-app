@@ -2,8 +2,8 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 
-from app.repositories.order_repositories import OrderRepository
 from app.repositories.order_item_repositories import OrderItemRepository
+from app.repositories.order_repositories import OrderRepository
 from app.schemas import OrderItemSchema, OrderSchema
 
 router = APIRouter()
@@ -23,46 +23,47 @@ async def create_order(
 
 
 @router.get("/orders/")
-async def get_orders(order_repo: OrderRepository = Depends(OrderRepository),
+async def get_orders(
+    order_repo: OrderRepository = Depends(OrderRepository),
 ):
     """
     Get all orders that are in the database
     """
     return await order_repo.get_orders()
 
-    
 
 @router.get("/orders/{id}")
-async def get_orders_id(id: uuid.UUID, order_repo: OrderRepository = Depends(OrderRepository)):
+async def get_orders_id(
+    id: uuid.UUID, order_repo: OrderRepository = Depends(OrderRepository)
+):
     """
     Get orders that are in the database by id
     """
     return await order_repo.get_order_by_id(id)
 
 
-
 @router.put("/orders/{id}")
 async def update_orders_id(
-    id: uuid.UUID, order: OrderSchema, order_repo: OrderRepository = Depends(OrderRepository)
+    id: uuid.UUID,
+    order: OrderSchema,
+    order_repo: OrderRepository = Depends(OrderRepository),
 ):
     """
     Update order details using their ID that is in the database
     """
-    updated_order = await order_repo.update_order_id(
-        id,
-        order.status
-    )
+    updated_order = await order_repo.update_order_id(id, order.status)
     return updated_order
-   
+
 
 @router.delete("/orders/{id}")
-async def delete_order_id(id: uuid.UUID, order_repo: OrderRepository = Depends(OrderRepository)):
+async def delete_order_id(
+    id: uuid.UUID, order_repo: OrderRepository = Depends(OrderRepository)
+):
     """
     Delete order details using their UUID that is stored in the database
     """
     delete_order = await order_repo.delete_order(id)
     return delete_order
-   
 
 
 # Creating CRUD for orderitems
@@ -70,8 +71,8 @@ async def delete_order_id(id: uuid.UUID, order_repo: OrderRepository = Depends(O
 
 @router.post("/orders/items")
 async def create_order_items(
-    order_items: OrderItemSchema, repository: OrderItemRepository = Depends(OrderItemRepository),
-
+    order_items: OrderItemSchema,
+    repository: OrderItemRepository = Depends(OrderItemRepository),
 ):
     """
     create orders items
@@ -79,8 +80,10 @@ async def create_order_items(
     new_order_item = await repository.create_order_items(order_items)
     return new_order_item
 
+
 @router.get("/orders/items")
-async def get_order_items(order_repo: OrderItemRepository = Depends(OrderItemRepository),
+async def get_order_items(
+    order_repo: OrderItemRepository = Depends(OrderItemRepository),
 ):
     """
     Get all orders items that are in the database
@@ -89,7 +92,9 @@ async def get_order_items(order_repo: OrderItemRepository = Depends(OrderItemRep
 
 
 @router.get("/orders/{id}/items")
-async def get_order_items_id(id: uuid.UUID, repository: OrderItemRepository = Depends(OrderItemRepository)):
+async def get_order_items_id(
+    id: uuid.UUID, repository: OrderItemRepository = Depends(OrderItemRepository)
+):
     """
     Get orders items for a specific items id
     """
@@ -98,7 +103,8 @@ async def get_order_items_id(id: uuid.UUID, repository: OrderItemRepository = De
         raise HTTPException(status_code=404, detail="Order item not found")
 
     return order_items
-    
+
+
 @router.put("/orders/{id}/items")
 async def update_order_items_id(
     id: uuid.UUID,
@@ -112,7 +118,9 @@ async def update_order_items_id(
     if not db_order_item:
         raise HTTPException(status_code=404, detail="Order item not found")
 
-    updated_order_item = await order_item_repository.update_order_items_id(id, order_item.quantity)
+    updated_order_item = await order_item_repository.update_order_items_id(
+        id, order_item.quantity
+    )
 
     return updated_order_item
 

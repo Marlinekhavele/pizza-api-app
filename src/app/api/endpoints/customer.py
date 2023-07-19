@@ -31,7 +31,9 @@ async def get_customers(repo: CustomerRepository = Depends(CustomerRepository)):
 
 
 @router.get("/customers/{id}")
-async def get_customer_id(id: uuid.UUID, repo: CustomerRepository = Depends(CustomerRepository)):
+async def get_customer_id(
+    id: uuid.UUID, repo: CustomerRepository = Depends(CustomerRepository)
+):
     """
     Get customers that are in the database by id
     """
