@@ -1,4 +1,5 @@
 import uuid
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -67,8 +68,6 @@ async def delete_order_id(
 
 
 # Creating CRUD for orderitems
-
-
 @router.post("/orders/items")
 async def create_order_items(
     order_items: OrderItemSchema,

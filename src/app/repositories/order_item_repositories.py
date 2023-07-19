@@ -13,12 +13,12 @@ class OrderItemRepository:
     def __init__(self, db: AsyncSession = Depends(get_db_session)):
         self.db = db
 
-    async def create_order_items(self, order_item_data):
+    async def create_order_items(self, order_item: OrderItem):
         new_order_item = OrderItem(
-            id=order_item_data.id,
-            order_id=order_item_data.order_id,
-            product_id=order_item_data.product_id,
-            quantity=order_item_data.quantity,
+            id=order_item.id,
+            order_id=order_item.order_id,
+            product_id=order_item.product_id,
+            quantity=order_item.quantity,
         )
         self.db.add(new_order_item)
         await self.db.commit()
@@ -42,7 +42,7 @@ class OrderItemRepository:
     async def update_order_items_id(
         self,
         order_item_id: uuid.UUID,
-        quantity: str,
+        quantity: int,
     ):
         order_item_obj = await self.get_order_items_by_id(order_item_id)
         if order_item_obj:

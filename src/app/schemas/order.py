@@ -15,4 +15,4 @@ class OrderItemSchema(BaseModel):
     id: UUID
     order_id: UUID = Field(alias="order_id")
     product_id: UUID = Field(alias="product_id")
-    quantity: str
+    quantity: int
