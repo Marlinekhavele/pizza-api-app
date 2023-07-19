@@ -7,7 +7,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps import get_db_session
-from app.models import Product, ProductFlavour, ProductSize
+from app.models import Product
 
 
 class ProductRepository:

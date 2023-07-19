@@ -7,7 +7,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps import get_db_session
-from app.models import Order, OrderItem
+from app.models import Order
 
 
 class OrderRepository:

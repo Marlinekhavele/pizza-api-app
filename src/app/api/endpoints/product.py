@@ -1,10 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.deps import get_db_session
 from app.repositories.product_flavour_repositories import ProductFlavourRepository
 from app.repositories.product_repositories import ProductRepository
 from app.repositories.product_size_repositories import ProductSizeRepository
