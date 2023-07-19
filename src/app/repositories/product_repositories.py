@@ -132,7 +132,7 @@ class ProductRepository:
     async def update_product_size(
         self, product_size_id: uuid.UUID, title: str,
     ):
-        product_size_obj = await self.get_product_flavour_by_id(product_size_id)
+        product_size_obj = await self.get_product_size_by_id(product_size_id)
         if product_size_obj:
             product_size_obj.title = title
             await self.db.commit()
