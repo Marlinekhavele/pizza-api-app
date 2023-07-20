@@ -1,5 +1,4 @@
 import uuid
-from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
 
@@ -78,16 +77,6 @@ async def create_order_items(
     """
     new_order_item = await repository.create_order_items(order_items)
     return new_order_item
-
-
-@router.get("/orders/items")
-async def get_order_items(
-    order_repo: OrderItemRepository = Depends(OrderItemRepository),
-):
-    """
-    Get all orders items that are in the database
-    """
-    return await order_repo.get_orders_items()
 
 
 @router.get("/orders/{id}/items")

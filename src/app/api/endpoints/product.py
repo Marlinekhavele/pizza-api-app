@@ -143,16 +143,6 @@ async def create_products_sizes(
     return new_product_size
 
 
-@router.get("/products/sizes")
-async def get_products_size(
-    product_size_repo: ProductSizeRepository = Depends(ProductSizeRepository),
-):
-    """
-    Get  all product sizes that are in the database
-    """
-    return await product_size_repo.get_products_sizes()
-
-
 @router.get("/products/{id}/sizes")
 async def get_products_sizes_id(
     id: uuid.UUID,

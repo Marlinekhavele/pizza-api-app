@@ -26,11 +26,6 @@ class ProductSizeRepository:
         await self.db.refresh(new_product_size)
         return new_product_size
 
-    async def get_products_sizes(self):
-        results = await self.db.execute(select(ProductSize))
-        products_sizes = results.scalars().all()
-        return products_sizes
-
     async def get_product_size_by_id(self, product_size_id: uuid.UUID):
         try:
             query = select(ProductSize).filter(ProductSize.id == product_size_id)

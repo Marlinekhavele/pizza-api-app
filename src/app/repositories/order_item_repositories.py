@@ -25,11 +25,6 @@ class OrderItemRepository:
         await self.db.refresh(new_order_item)
         return new_order_item
 
-    async def get_orders_items(self):
-        results = await self.db.execute(select(OrderItem))
-        orders_items = results.scalars().all()
-        return orders_items
-
     async def get_order_items_by_id(self, order_item_id: uuid.UUID):
         try:
             query = select(OrderItem).filter(OrderItem.id == order_item_id)

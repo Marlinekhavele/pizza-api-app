@@ -1,6 +1,8 @@
+import asyncio
+
 import pytest
 from httpx import AsyncClient
-import asyncio
+
 from app.main import app
 
 TEST_BASE_URL = "http://test"
