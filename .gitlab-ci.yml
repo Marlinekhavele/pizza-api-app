@@ -162,10 +162,10 @@ diff_app:dev:
   environment:
     name: dev
 
-diff_app:uat:
-  extends: .diff_app
-  environment:
-    name: uat
+# diff_app:uat:
+#   extends: .diff_app
+#   environment:
+#     name: uat
 
 diff_app:prod:
   extends: .diff_app
@@ -181,14 +181,14 @@ deploy_app:dev:
   environment:
     name: dev
 
-deploy_app:uat:
-  needs:
-    - job: "diff_app:uat"
-    - job: "tf_apply:uat"
-      optional: true
-  extends: .deploy_app
-  environment:
-    name: uat
+# deploy_app:uat:
+#   needs:
+#     - job: "diff_app:uat"
+#     - job: "tf_apply:uat"
+#       optional: true
+#   extends: .deploy_app
+#   environment:
+#     name: uat
 
 deploy_app:prod:
   needs:
