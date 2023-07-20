@@ -19,7 +19,7 @@ variables:
     - iac/terraform/environments/playground/*
     - iac/terraform/environments/dev/*
     - iac/terraform/environments/prod/*
-    - iac/terraform/environments/uat/*
+    # - iac/terraform/environments/uat/*
     - iac/terraform/.gitlab-ci.yml
 
 .lib:terraform:rules:shared: &lib_terraform_rules_shared
