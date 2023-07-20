@@ -154,15 +154,15 @@ tf_apply:prod:
     name: prod
   # needs: ["tf_plan:prod"]
 
-tf_plan:uat:
-  <<: *plan
-  environment:
-    name: uat
+# tf_plan:uat:
+#   <<: *plan
+#   environment:
+#     name: uat
 
-tf_apply:uat:
-  <<: *apply
-  environment:
-    name: uat
+# tf_apply:uat:
+#   <<: *apply
+#   environment:
+#     name: uat
 
 
 
