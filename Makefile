@@ -11,10 +11,10 @@ install:
 setup: install
 	pre-commit install
 
-test:
-	poetry run pytest
+test: migrate-local
+	poetry run pytest 
 
-test-with-coverage:
+test-with-coverage: migrate-local
 	poetry run pytest src/tests --cov=src/app --cov-report term-missing:skip-covered --cov-report xml:.test-reports/coverage.xml --junitxml=.test-reports/test-run.xml
 
 # check-types:
@@ -42,3 +42,6 @@ stop:
 # clean pyc files/dirs
 pyclean:
 	find . -name "*.py[co]" -o -name __pycache__ -exec rm -rf {} +
+
+migrate-local:
+	cd src && poetry run alembic upgrade head

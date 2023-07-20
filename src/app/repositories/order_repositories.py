@@ -1,5 +1,9 @@
 # will handle all my order logic
+import uuid
+
 from fastapi import Depends
+from sqlalchemy import select
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.deps import get_db_session
@@ -20,3 +24,36 @@ class OrderRepository:
         await self.db.commit()
         await self.db.refresh(new_order)
         return new_order
+
+    async def get_orders(self):
+        results = await self.db.execute(select(Order))
+        orders = results.scalars().all()
+        return orders
+
+    async def get_order_by_id(self, order_id: uuid.UUID):
+        try:
+            query = select(Order).filter(Order.id == order_id)
+            result = await self.db.execute(query)
+            order_obj = result.scalar_one()
+            return order_obj
+        except NoResultFound:
+            return None
+
+    async def update_order_id(
+        self,
+        order_id: uuid.UUID,
+        status: str,
+    ):
+        order_obj = await self.get_order_by_id(order_id)
+        if order_obj:
+            order_obj.status = status
+
+            await self.db.commit()
+        return order_obj
+
+    async def delete_order(self, order_id: uuid.UUID):
+        order_obj = await self.get_order_by_id(order_id)
+        if order_obj:
+            self.db.delete(order_obj)
+            await self.db.commit()
+        return order_obj
