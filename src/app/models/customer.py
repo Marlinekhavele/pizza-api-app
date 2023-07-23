@@ -1,13 +1,11 @@
-import sqlalchemy as sa
 from uuid import uuid4
 
+import sqlalchemy as sa
+from sqlalchemy import PrimaryKeyConstraint, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 
 from ..database.base import Base
-from sqlalchemy import (
-    PrimaryKeyConstraint,
-    UniqueConstraint,
-)
+
 
 class Customer(Base):
     __tablename__ = "customers"

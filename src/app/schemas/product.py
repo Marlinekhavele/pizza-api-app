@@ -1,10 +1,11 @@
-from uuid import UUID
 from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, Field
-from app.schemas.enums.product_flavour import Flavour
 
+from app.schemas.enums.product_flavour import Flavour
 from app.schemas.enums.product_size import Size
+
 
 class ProductSchema(BaseModel):
     title: str
@@ -20,7 +21,7 @@ class ProductFlavourSchema(BaseModel):
 
 
 class ProductSizeSchema(BaseModel):
-    title:Optional[Size]
+    title: Optional[Size]
 
     active: str
     product_id: UUID = Field(alias="product_id")

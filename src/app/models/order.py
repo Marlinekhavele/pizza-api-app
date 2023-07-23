@@ -1,17 +1,15 @@
+from uuid import uuid4
+
 import sqlalchemy as sa
+from sqlalchemy import PrimaryKeyConstraint, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
-from uuid import uuid4
 
 from app.schemas.enums.order import OrderStatus
 
 from ..database.base import Base
 from .customer import Customer
 from .product import Product
-from sqlalchemy import (
-    PrimaryKeyConstraint,
-    UniqueConstraint,
-)
 
 
 class Order(Base):
@@ -29,7 +27,6 @@ class Order(Base):
     )
     customer = relationship(Customer, uselist=False, lazy="selectin")
     status = sa.Column(sa.Enum(OrderStatus))
-
 
 
 class OrderItem(Base):
