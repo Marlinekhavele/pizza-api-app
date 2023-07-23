@@ -15,7 +15,6 @@ class ProductFlavourRepository:
 
     async def create_product_flavours(self, product_flavour_data):
         new_product_flavour = ProductFlavour(
-            id=product_flavour_data.id,
             title=product_flavour_data.title,
             active=product_flavour_data.active,
             product_id=product_flavour_data.product_id,
@@ -55,4 +54,3 @@ class ProductFlavourRepository:
         if product_flavour:
             self.db.delete(product_flavour)
             await self.db.commit()
-        return product_flavour

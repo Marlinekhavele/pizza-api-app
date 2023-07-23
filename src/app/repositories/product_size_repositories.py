@@ -16,7 +16,6 @@ class ProductSizeRepository:
     # sizes
     async def create_product_sizes(self, product_size_data):
         new_product_size = ProductSize(
-            id=product_size_data.id,
             title=product_size_data.title,
             active=product_size_data.active,
             product_id=product_size_data.product_id,
@@ -51,4 +50,3 @@ class ProductSizeRepository:
         if product_size:
             self.db.delete(product_size)
             await self.db.commit()
-        return product_size

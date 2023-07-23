@@ -15,7 +15,6 @@ class OrderItemRepository:
 
     async def create_order_items(self, order_item: OrderItem):
         new_order_item = OrderItem(
-            id=order_item.id,
             order_id=order_item.order_id,
             product_id=order_item.product_id,
             quantity=order_item.quantity,
@@ -51,4 +50,3 @@ class OrderItemRepository:
         if order_item_obj:
             self.db.delete(order_item_obj)
             await self.db.commit()
-        return order_item_obj

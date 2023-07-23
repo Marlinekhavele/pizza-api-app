@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class Status(str, Enum):
+class OrderStatus(str, Enum):
     DRAFT = "Draft"
     PROCESSING = "Processing"
     CANCELLED = "Cancelled"
