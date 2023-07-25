@@ -91,6 +91,9 @@ test:
       POSTGRES_PORT: 5432
   
   script:
+    - cd src 
+    - alembic upgrade head
+    - cd ..
     - make test-with-coverage
   tags:
     - small-runners-nw

@@ -40,5 +40,4 @@ preDeployJob:
   command:
     - bash
     - -c
-    - make 
-    - migrate-local
+    - alembic upgrade head
