@@ -27,3 +27,19 @@ livenessProbe:
   path: /api/health
 readinessProbe:
   path: /api/health
+
+
+preDeployJob:
+  enabled: true
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  command:
+    - bash
+    - -c
+    - make 
+    - migrate-local
