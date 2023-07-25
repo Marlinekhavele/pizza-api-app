@@ -93,6 +93,7 @@ test:
   script:
     - cd src 
     - alembic upgrade head
+    - cd ..
     - make test-with-coverage
   tags:
     - small-runners-nw
