@@ -132,15 +132,15 @@ tf_apply:dev:
     name: dev
   # needs: ["tf_plan:dev"]
 
-tf_plan:playground:
-  <<: *plan
-  environment:
-    name: playground
+# tf_plan:playground:
+#   <<: *plan
+#   environment:
+#     name: playground
 
-tf_apply:playground:
-  <<: *apply
-  environment:
-    name: playground
+# tf_apply:playground:
+#   <<: *apply
+#   environment:
+#     name: playground
   # needs: ["tf_plan:playground"]
 
 tf_plan:prod:
