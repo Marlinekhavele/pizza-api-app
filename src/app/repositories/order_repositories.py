@@ -16,7 +16,6 @@ class OrderRepository:
 
     async def create_order(self, order_data):
         new_order = Order(
-            id=order_data.id,
             customer_id=order_data.customer_id,
             status=order_data.status,
         )
@@ -56,4 +55,3 @@ class OrderRepository:
         if order_obj:
             self.db.delete(order_obj)
             await self.db.commit()
-        return order_obj

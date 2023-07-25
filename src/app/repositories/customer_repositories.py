@@ -16,7 +16,6 @@ class CustomerRepository:
 
     async def create_customer(self, customer_data):
         new_customer = Customer(
-            id=customer_data.id,
             name=customer_data.name,
             phone=customer_data.phone,
             email=customer_data.email,
@@ -56,4 +55,3 @@ class CustomerRepository:
         if customer_obj:
             self.db.delete(customer_obj)
             await self.db.commit()
-        return customer_obj

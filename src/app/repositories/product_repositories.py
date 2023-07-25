@@ -16,7 +16,6 @@ class ProductRepository:
 
     async def create_product(self, product_data):
         new_product = Product(
-            id=product_data.id,
             title=product_data.title,
             description=product_data.description,
             price=product_data.price,
@@ -56,4 +55,3 @@ class ProductRepository:
         if product:
             self.db.delete(product)
             await self.db.commit()
-        return product
