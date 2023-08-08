@@ -3,9 +3,6 @@ sennder:
   team: driver-app
   component: pizza-api-app
   project: pizza-api-app
-
-gitlabProjectId: "47466681"
-
   
 staticEnvironment:
   - name: PORT
@@ -21,24 +18,11 @@ resources:
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 10
   targetCPUUtilizationPercentage: 80
 livenessProbe:
   path: /api/health
 readinessProbe:
   path: /api/health
 
-
-preDeployJob:
-  enabled: true
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
-  command:
-    - bash
-    - -c
-    - alembic upgrade head
+gitlabProjectId: 

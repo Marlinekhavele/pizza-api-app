@@ -4,9 +4,6 @@ sennder:
   component: pizza-api-app
   project: pizza-api-app
 
-gitlabProjectId: "47466681"
-
-
 staticEnvironment:
   - name: PORT
     value: 8080
@@ -21,9 +18,11 @@ resources:
 autoscaling:
   enabled: false
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 3
   targetCPUUtilizationPercentage: 80
 livenessProbe:
   path: /api/health
 readinessProbe:
   path: /api/health
+
+gitlabProjectId: 

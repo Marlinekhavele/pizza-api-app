@@ -1,15 +1,17 @@
 {
-  "template": {
-    "id": "k8s-fastapi-app"
-  },
   "data": {
+    "code_ownership": false,
+    "api_gateway": false,
+    "rds": true,
+    "sonar_cloud": true,
+    "onboarding": true,
+    "gitlab_project_id": "",
     "ba": "carriers-and-drivers",
     "pod": "driver-app",
     "component": "pizza-api-app",
-    "code_ownership": false,
-    "api_gateway_enabled": true,
-    "rds": true,
-    "sonar_cloud": true,
-    "onboarding": true
+    "api_gateway_enabled": true
+  },
+  "template": {
+    "id": "k8s-fastapi-app"
   }
 }

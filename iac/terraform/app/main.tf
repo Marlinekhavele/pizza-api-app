@@ -10,5 +10,4 @@ locals {
   ba        = "carriers-and-drivers"
   namespace = "sennder"
   project   = "pizza-api-app"
-  
 }

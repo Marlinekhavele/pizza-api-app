@@ -28,7 +28,7 @@ module "rds" { // https://senndergmh.atlassian.net/wiki/x/DQFrQ
   username      = var.username
   password      = aws_ssm_parameter.database_master_password.value
 
-  deletion_protection      = var.env == "uat" ? false : true
+  deletion_protection     = var.deletion_protection
   backup_retention_period = var.backup_retention_period
   monitoring_interval     = var.monitoring_interval
   allow_vpn_access        = true

@@ -5,7 +5,7 @@ cache:
     - .terraform
 
 variables:
-  tf_image: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/aws:2.5.1
+  tf_image: 075050162388.dkr.ecr.eu-central-1.amazonaws.com/sennder/platform/aws:2.5.0
 
 .lib.terraform:changes:shared: &lib_terraform_changes_shared
   changes:
@@ -19,7 +19,7 @@ variables:
     - iac/terraform/environments/playground/*
     - iac/terraform/environments/dev/*
     - iac/terraform/environments/prod/*
-    # - iac/terraform/environments/uat/*
+    - iac/terraform/environments/uat/*
     - iac/terraform/.gitlab-ci.yml
 
 .lib:terraform:rules:shared: &lib_terraform_rules_shared
@@ -64,7 +64,6 @@ tf_shared:
     - tfswitch
     - cat ~/.aws/config
     - source ../../scripts/terraform-init.sh
-    - "echo Current CI environemnt: ${CI_ENVIRONMENT_NAME}"
   script:
     - terraform validate
     - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
@@ -95,7 +94,6 @@ tf_shared:
     - tfswitch
     - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
     - source ../../scripts/terraform-init.sh || true
-    - "echo Current CI environemnt: ${CI_ENVIRONMENT_NAME}"
   tags:
     - small-runners-nw
   <<: *lib_terraform_rules_app
@@ -121,16 +119,43 @@ tf_shared:
   script:
     - terraform apply -input=false ${PLAN}
 
-tf_plan:dev:
-  <<: *plan
-  environment:
-    name: dev
 
-tf_apply:dev:
-  <<: *apply
+
+tf_destroy:playground:
+  extends: .prepare_tf
+  stage: destroy_app
+  interruptible: false
   environment:
-    name: dev
-  # needs: ["tf_plan:dev"]
+    name: playground
+  script:
+    - terraform destroy -auto-approve -input=false -var-file=../environments/${CI_ENVIRONMENT_NAME}/variables.tfvars
+  rules:
+    - when: manual
+
+tf_destroy_shared:
+  stage: destroy_app
+  image: ${tf_image}
+  environment:
+    name: shared
+  variables:
+    TF_ROOT: ${CI_PROJECT_DIR}/iac/terraform/shared
+    TF_VAR_git_last_commit_author: ${GITLAB_USER_EMAIL}
+    TF_VAR_git_last_commit_short_sha: ${CI_COMMIT_SHORT_SHA}
+    TF_VAR_git_repository: ${CI_PROJECT_URL}
+    TF_VAR_project_id: ${CI_PROJECT_ID}
+  interruptible: false
+  before_script:
+    - unset AWS_ACCESS_KEY_ID
+    - unset AWS_SECRET_ACCESS_KEY
+    - cd ${TF_ROOT}
+    - cat ~/.aws/config
+    - source ../../scripts/terraform-init.sh
+  script:
+    - terraform destroy -auto-approve -input=false
+  rules:
+    - when: manual
+  tags:
+    - small-runners-nw
 
 tf_plan:playground:
   <<: *plan
@@ -141,28 +166,6 @@ tf_apply:playground:
   <<: *apply
   environment:
     name: playground
-  # needs: ["tf_plan:playground"]
-
-tf_plan:prod:
-  <<: *plan
-  environment:
-    name: prod
-
-tf_apply:prod:
-  <<: *apply
-  environment:
-    name: prod
-  # needs: ["tf_plan:prod"]
-
-# tf_plan:uat:
-#   <<: *plan
-#   environment:
-#     name: uat
-
-# tf_apply:uat:
-#   <<: *apply
-#   environment:
-#     name: uat
-
+  needs: ["tf_plan:playground"]
 
 
